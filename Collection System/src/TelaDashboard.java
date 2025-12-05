@@ -28,21 +28,23 @@ public class TelaDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        btnInicio = new javax.swing.JButton();
-        btnColecoes = new javax.swing.JButton();
+        btnMenuInicio = new javax.swing.JButton();
+        btnMenuColecoes = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        lblNomeUsuario = new javax.swing.JLabel();
+        lblBemVindo = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        lblNumeroColecoes = new javax.swing.JLabel();
+        lblTotalColecoes = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        lblNumeroJogos = new javax.swing.JLabel();
+        lblTotalJogos = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        lblNomeJogo = new javax.swing.JLabel();
+        lblUltimoJogo = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        btnAcessoRapido2 = new javax.swing.JButton();
+        btnAcessoRapido1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(18, 18, 18));
@@ -51,23 +53,23 @@ public class TelaDashboard extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
         jPanel1.setForeground(new java.awt.Color(30, 30, 30));
 
-        btnInicio.setBackground(new java.awt.Color(51, 51, 51));
-        btnInicio.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnInicio.setForeground(new java.awt.Color(255, 255, 255));
-        btnInicio.setText("INÍCIO");
-        btnInicio.addActionListener(new java.awt.event.ActionListener() {
+        btnMenuInicio.setBackground(new java.awt.Color(51, 51, 51));
+        btnMenuInicio.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnMenuInicio.setForeground(new java.awt.Color(255, 255, 255));
+        btnMenuInicio.setText("INÍCIO");
+        btnMenuInicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInicioActionPerformed(evt);
+                btnMenuInicioActionPerformed(evt);
             }
         });
 
-        btnColecoes.setBackground(new java.awt.Color(51, 51, 51));
-        btnColecoes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnColecoes.setForeground(new java.awt.Color(255, 255, 255));
-        btnColecoes.setText("COLEÇÕES");
-        btnColecoes.addActionListener(new java.awt.event.ActionListener() {
+        btnMenuColecoes.setBackground(new java.awt.Color(51, 51, 51));
+        btnMenuColecoes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnMenuColecoes.setForeground(new java.awt.Color(255, 255, 255));
+        btnMenuColecoes.setText("COLEÇÕES");
+        btnMenuColecoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnColecoesActionPerformed(evt);
+                btnMenuColecoesActionPerformed(evt);
             }
         });
 
@@ -84,17 +86,17 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnColecoes, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnMenuColecoes, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMenuInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnMenuInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnColecoes, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnMenuColecoes, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 462, Short.MAX_VALUE)
                 .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(109, 109, 109))
@@ -104,9 +106,9 @@ public class TelaDashboard extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(30, 30, 30));
 
-        lblNomeUsuario.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        lblNomeUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        lblNomeUsuario.setText("Bem-vindo, Usuário");
+        lblBemVindo.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        lblBemVindo.setForeground(new java.awt.Color(255, 255, 255));
+        lblBemVindo.setText("Bem-vindo, Usuário");
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -114,10 +116,10 @@ public class TelaDashboard extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Total de Coleções:");
 
-        lblNumeroColecoes.setBackground(new java.awt.Color(0, 230, 118));
-        lblNumeroColecoes.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblNumeroColecoes.setForeground(new java.awt.Color(0, 230, 118));
-        lblNumeroColecoes.setText("XXXX");
+        lblTotalColecoes.setBackground(new java.awt.Color(0, 230, 118));
+        lblTotalColecoes.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTotalColecoes.setForeground(new java.awt.Color(0, 230, 118));
+        lblTotalColecoes.setText("XXXX");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -127,7 +129,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblNumeroColecoes)
+                .addComponent(lblTotalColecoes)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -136,7 +138,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(lblNumeroColecoes))
+                    .addComponent(lblTotalColecoes))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -146,10 +148,10 @@ public class TelaDashboard extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Total de Jogos:");
 
-        lblNumeroJogos.setBackground(new java.awt.Color(0, 230, 118));
-        lblNumeroJogos.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblNumeroJogos.setForeground(new java.awt.Color(0, 230, 118));
-        lblNumeroJogos.setText("XXXX");
+        lblTotalJogos.setBackground(new java.awt.Color(0, 230, 118));
+        lblTotalJogos.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTotalJogos.setForeground(new java.awt.Color(0, 230, 118));
+        lblTotalJogos.setText("XXXX");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -159,7 +161,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblNumeroJogos)
+                .addComponent(lblTotalJogos)
                 .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -168,7 +170,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(lblNumeroJogos))
+                    .addComponent(lblTotalJogos))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -178,10 +180,10 @@ public class TelaDashboard extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Último Jogo Adicionado:");
 
-        lblNomeJogo.setBackground(new java.awt.Color(0, 230, 118));
-        lblNomeJogo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblNomeJogo.setForeground(new java.awt.Color(0, 230, 118));
-        lblNomeJogo.setText("Nome do jogo");
+        lblUltimoJogo.setBackground(new java.awt.Color(0, 230, 118));
+        lblUltimoJogo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblUltimoJogo.setForeground(new java.awt.Color(0, 230, 118));
+        lblUltimoJogo.setText("Nome do jogo");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -191,7 +193,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblNomeJogo)
+                .addComponent(lblUltimoJogo)
                 .addContainerGap(169, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -200,13 +202,21 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(lblNomeJogo))
+                    .addComponent(lblUltimoJogo))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Acesso Rápido");
+
+        btnAcessoRapido2.setBackground(new java.awt.Color(0, 230, 118));
+        btnAcessoRapido2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnAcessoRapido2.setText("JOGOS DE PS4");
+
+        btnAcessoRapido1.setBackground(new java.awt.Color(0, 230, 118));
+        btnAcessoRapido1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnAcessoRapido1.setText("JOGOS DE PC");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -216,7 +226,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(242, 242, 242)
-                        .addComponent(lblNomeUsuario))
+                        .addComponent(lblBemVindo))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,14 +238,19 @@ public class TelaDashboard extends javax.swing.JFrame {
                                 .addGap(12, 12, 12))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(288, 288, 288)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(254, 254, 254)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAcessoRapido2, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAcessoRapido1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(117, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addComponent(lblNomeUsuario)
+                .addComponent(lblBemVindo)
                 .addGap(31, 31, 31)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -244,7 +259,11 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(62, 62, 62)
                 .addComponent(jLabel1)
-                .addContainerGap(414, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnAcessoRapido1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAcessoRapido2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(216, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, 770));
@@ -252,13 +271,13 @@ public class TelaDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+    private void btnMenuInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuInicioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnInicioActionPerformed
+    }//GEN-LAST:event_btnMenuInicioActionPerformed
 
-    private void btnColecoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColecoesActionPerformed
+    private void btnMenuColecoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuColecoesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnColecoesActionPerformed
+    }//GEN-LAST:event_btnMenuColecoesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -286,8 +305,10 @@ public class TelaDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnColecoes;
-    private javax.swing.JButton btnInicio;
+    private javax.swing.JButton btnAcessoRapido1;
+    private javax.swing.JButton btnAcessoRapido2;
+    private javax.swing.JButton btnMenuColecoes;
+    private javax.swing.JButton btnMenuInicio;
     private javax.swing.JButton btnSair;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -298,9 +319,9 @@ public class TelaDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JLabel lblNomeJogo;
-    private javax.swing.JLabel lblNomeUsuario;
-    private javax.swing.JLabel lblNumeroColecoes;
-    private javax.swing.JLabel lblNumeroJogos;
+    private javax.swing.JLabel lblBemVindo;
+    private javax.swing.JLabel lblTotalColecoes;
+    private javax.swing.JLabel lblTotalJogos;
+    private javax.swing.JLabel lblUltimoJogo;
     // End of variables declaration//GEN-END:variables
 }
