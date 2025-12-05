@@ -7,37 +7,15 @@
  *
  * @author l3huz
  */
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JOptionPane;
-
-public class TelaColecoes extends javax.swing.JFrame {
+public class TelaCriarColecao extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaColecoes.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaCriarColecao.class.getName());
 
     /**
-     * Creates new form TelaColecoes
+     * Creates new form TelaCriarColecao
      */
-    public TelaColecoes() {
+    public TelaCriarColecao() {
         initComponents();
-    
-        // --- SIMULAÇÃO DE DADOS (Substitui o Banco de Dados por enquanto) ---
-        criarCardColecao("Jogos de PC", 42);
-        criarCardColecao("Jogos de PS4", 18);
-        criarCardColecao("Livros de RPG", 5);
-        criarCardColecao("Coleção de Revistas", 150);
-        criarCardColecao("Wishlist", 0);
-        criarCardColecao("Jogos de Switch", 10);
-        // -------------------------------------------------------------------
-    
-        // ATUALIZA o painel para que os cards apareçam
-        pnlContainerCards.revalidate();
-        pnlContainerCards.repaint();
     }
 
     /**
@@ -54,9 +32,14 @@ public class TelaColecoes extends javax.swing.JFrame {
         btnMenuColecoes = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        btnCriarColecao = new javax.swing.JButton();
-        pnlContainerCards = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        btnSalvar = new javax.swing.JButton();
+        btnSalvar1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -115,48 +98,101 @@ public class TelaColecoes extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 770));
 
-        jPanel2.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel2.setBackground(new java.awt.Color(30, 30, 30));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jPanel3.setBackground(new java.awt.Color(51, 51, 51));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Minhas Coleções");
+        jLabel1.setText("Criar Coleção");
 
-        btnCriarColecao.setBackground(new java.awt.Color(0, 230, 118));
-        btnCriarColecao.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnCriarColecao.setText("Criar Nova");
-        btnCriarColecao.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Nome:");
+
+        jTextField1.setBackground(new java.awt.Color(220, 220, 220));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Ícone:");
+
+        jComboBox1.setBackground(new java.awt.Color(220, 220, 220));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCriarColecaoActionPerformed(evt);
+                jComboBox1ActionPerformed(evt);
             }
         });
+
+        btnSalvar.setBackground(new java.awt.Color(0, 230, 118));
+        btnSalvar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnSalvar.setForeground(new java.awt.Color(255, 255, 255));
+        btnSalvar.setText("SALVAR");
+
+        btnSalvar1.setBackground(new java.awt.Color(51, 51, 51));
+        btnSalvar1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnSalvar1.setForeground(new java.awt.Color(255, 255, 255));
+        btnSalvar1.setText("CANCELAR");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(263, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(254, 254, 254))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnSalvar1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 346, Short.MAX_VALUE)
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jLabel1)
+                .addGap(169, 169, 169)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(84, 84, 84)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalvar1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(109, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 498, Short.MAX_VALUE)
-                .addComponent(btnCriarColecao, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(51, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(btnCriarColecao, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGap(60, 60, 60)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, -1));
-
-        pnlContainerCards.setBackground(new java.awt.Color(30, 30, 30));
-        pnlContainerCards.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        pnlContainerCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 30, 30));
-        getContentPane().add(pnlContainerCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 850, 660));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, 770));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -169,9 +205,9 @@ public class TelaColecoes extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnMenuColecoesActionPerformed
 
-    private void btnCriarColecaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarColecaoActionPerformed
-       new TelaCriarColecao().setVisible(true);
-    }//GEN-LAST:event_btnCriarColecaoActionPerformed
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,61 +231,22 @@ public class TelaColecoes extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new TelaColecoes().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new TelaCriarColecao().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCriarColecao;
     private javax.swing.JButton btnMenuColecoes;
     private javax.swing.JButton btnMenuInicio;
     private javax.swing.JButton btnSair;
+    private javax.swing.JButton btnSalvar;
+    private javax.swing.JButton btnSalvar1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel pnlContainerCards;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
-
-// Cores
-    private final Color COR_CARD = new Color(51, 51, 51);
-    private final Color COR_VERDE_NEON = new Color(0, 230, 118); // #00E676
-
-    // Método que cria um card visualmente e o adiciona ao container
-    private void criarCardColecao(String nomeColecao, int qtdItens) {
-        // 1. O Fundo do Card (JPanel)
-        JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(200, 200)); // Tamanho do quadrado (aprox)
-        card.setBackground(COR_CARD);
-        card.setLayout(null); // Layout interno absoluto para posicionar texto e ícone
-
-        // Adiciona um evento simples de clique (simula a abertura da lista de jogos)
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JOptionPane.showMessageDialog(null, "Abrir coleção: " + nomeColecao + " (Simulacao)");
-                // Futuramente: new TelaListaJogos(nomeColecao).setVisible(true);
-            }
-        });
-
-        // 2. O Ícone (Quadrado Verde Simulado, como no seu Figma)
-        JPanel iconPanel = new JPanel();
-        iconPanel.setBounds(75, 30, 50, 50); // Centralizado no topo do card
-        iconPanel.setBackground(COR_VERDE_NEON);
-        card.add(iconPanel);
-
-        // 3. O Nome da Coleção
-        JLabel lblNome = new JLabel(nomeColecao, SwingConstants.CENTER);
-        lblNome.setForeground(Color.WHITE);
-        lblNome.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblNome.setBounds(10, 110, 180, 20);
-        card.add(lblNome);
-
-        // 4. A Quantidade
-        JLabel lblQtd = new JLabel(qtdItens + " jogos", SwingConstants.CENTER);
-        lblQtd.setForeground(Color.LIGHT_GRAY);
-        lblQtd.setBounds(10, 135, 180, 20);
-        card.add(lblQtd);
-
-        // 5. Adiciona o card pronto na tela (no seu JPanel que usa FlowLayout)
-        pnlContainerCards.add(card);
-    }
 }
