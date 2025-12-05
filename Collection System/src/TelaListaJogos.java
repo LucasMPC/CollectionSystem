@@ -7,38 +7,68 @@
  *
  * @author l3huz
  */
-
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
+import java.awt.Font;
 
-public class TelaColecoes extends javax.swing.JFrame {
+public class TelaListaJogos extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaColecoes.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaListaJogos.class.getName());
 
     /**
-     * Creates new form TelaColecoes
+     * Creates new form TelaListaJogos
      */
-    public TelaColecoes() {
-        initComponents();
+    // Cores
+    private final Color COR_HEADER_TABELA = new Color(30, 30, 30); // Cinza Chumbo
+    private final Color COR_TEXTO_BRANCO = Color.WHITE;
+    private final Color COR_VERDE_NEON = new Color(0, 230, 118);
+
+    private void configurarTabelaJogos() {
+        // 1. Definir as colunas da tabela
+        Object[] colunas = {"Capa", "Nome", "Ano", "Gênero", "Ações"}; // Nomes do seu Figma
+
+        // 2. Simular dados
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(colunas);
+
+        // Dados de exemplo (Mock Data)
+        Object[][] dados = {
+            {"[Capa]", "God of War", "2018", "Ação", "[Editar/Excluir]"},
+            {"[Capa]", "The Last of Us", "2013", "Aventura", "[Editar/Excluir]"},
+            {"[Capa]", "Doom Eternal", "2020", "FPS", "[Editar/Excluir]"}
+        };
+
+        for (Object[] linha : dados) {
+            modelo.addRow(linha);
+        }
     
-        // --- SIMULAÇÃO DE DADOS (Substitui o Banco de Dados por enquanto) ---
-        criarCardColecao("Jogos de PC", 42);
-        criarCardColecao("Jogos de PS4", 18);
-        criarCardColecao("Livros de RPG", 5);
-        criarCardColecao("Coleção de Revistas", 150);
-        criarCardColecao("Wishlist", 0);
-        criarCardColecao("Jogos de Switch", 10);
-        // -------------------------------------------------------------------
+        // 3. Aplicar o modelo na JTable
+        tabelaJogos.setModel(modelo);
+
+        // 4. Estilizar o cabeçalho (Para ficar Dark Mode)
+        tabelaJogos.setBackground(new Color(18, 18, 18)); // Fundo da tabela: Preto
+        tabelaJogos.setForeground(COR_TEXTO_BRANCO); // Cor do texto da tabela: Branco
     
-        // ATUALIZA o painel para que os cards apareçam
-        pnlContainerCards.revalidate();
-        pnlContainerCards.repaint();
+        // Configura a cor do cabeçalho
+        tabelaJogos.getTableHeader().setBackground(COR_HEADER_TABELA);
+        tabelaJogos.getTableHeader().setForeground(COR_TEXTO_BRANCO);
+    
+        // Estilo da barra de rolagem (opcional, mas melhora a visualizacao)
+        scrollPaneTabela.getViewport().setBackground(new Color(18, 18, 18)); 
     }
+
+// Chame no construtor:
+public TelaListaJogos(String nomeColecao) {
+    initComponents();
+    
+    // 1. ATUALIZA o texto do cabeçalho com o nome da coleção
+    lblNomeColecao.setText(nomeColecao); 
+    
+    // 2. Configura a tabela
+    configurarTabelaJogos();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,9 +84,10 @@ public class TelaColecoes extends javax.swing.JFrame {
         btnMenuColecoes = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        btnCriarColecao = new javax.swing.JButton();
-        pnlContainerCards = new javax.swing.JPanel();
+        lblNomeColecao = new javax.swing.JLabel();
+        btnAdicionarJogo = new javax.swing.JButton();
+        scrollPaneTabela = new javax.swing.JScrollPane();
+        tabelaJogos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -117,46 +148,52 @@ public class TelaColecoes extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Minhas Coleções");
+        lblNomeColecao.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblNomeColecao.setForeground(new java.awt.Color(255, 255, 255));
+        lblNomeColecao.setText("(Nome da coleção)");
 
-        btnCriarColecao.setBackground(new java.awt.Color(0, 230, 118));
-        btnCriarColecao.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnCriarColecao.setText("Criar Nova");
-        btnCriarColecao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCriarColecaoActionPerformed(evt);
-            }
-        });
+        btnAdicionarJogo.setBackground(new java.awt.Color(0, 230, 118));
+        btnAdicionarJogo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnAdicionarJogo.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdicionarJogo.setText("Adicionar Jogo");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 498, Short.MAX_VALUE)
-                .addComponent(btnCriarColecao, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44))
+                .addGap(28, 28, 28)
+                .addComponent(lblNomeColecao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 408, Short.MAX_VALUE)
+                .addComponent(btnAdicionarJogo)
+                .addGap(40, 40, 40))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(btnCriarColecao, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                    .addComponent(lblNomeColecao)
+                    .addComponent(btnAdicionarJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, -1));
 
-        pnlContainerCards.setBackground(new java.awt.Color(30, 30, 30));
-        pnlContainerCards.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        pnlContainerCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 30, 30));
-        getContentPane().add(pnlContainerCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 850, 660));
+        tabelaJogos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrollPaneTabela.setViewportView(tabelaJogos);
+
+        getContentPane().add(scrollPaneTabela, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, 850, 660));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -168,10 +205,6 @@ public class TelaColecoes extends javax.swing.JFrame {
     private void btnMenuColecoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuColecoesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnMenuColecoesActionPerformed
-
-    private void btnCriarColecaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarColecaoActionPerformed
-       new TelaCriarColecao().setVisible(true);
-    }//GEN-LAST:event_btnCriarColecaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,62 +228,18 @@ public class TelaColecoes extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new TelaColecoes().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new TelaListaJogos("TESTE DE FLUXO").setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCriarColecao;
+    private javax.swing.JButton btnAdicionarJogo;
     private javax.swing.JButton btnMenuColecoes;
     private javax.swing.JButton btnMenuInicio;
     private javax.swing.JButton btnSair;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel pnlContainerCards;
+    private javax.swing.JLabel lblNomeColecao;
+    private javax.swing.JScrollPane scrollPaneTabela;
+    private javax.swing.JTable tabelaJogos;
     // End of variables declaration//GEN-END:variables
-
-// Cores
-    private final Color COR_CARD = new Color(51, 51, 51);
-    private final Color COR_VERDE_NEON = new Color(0, 230, 118); // #00E676
-
-    // Método que cria um card visualmente e o adiciona ao container
-    private void criarCardColecao(String nomeColecao, int qtdItens) {
-        // 1. O Fundo do Card (JPanel)
-        JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(200, 200)); // Tamanho do quadrado (aprox)
-        card.setBackground(COR_CARD);
-        card.setLayout(null); // Layout interno absoluto para posicionar texto e ícone
-
-        // Adiciona um evento simples de clique (simula a abertura da lista de jogos)
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TelaListaJogos lista = new TelaListaJogos(nomeColecao); 
-                lista.setVisible(true);
-                dispose();
-            }
-        });
-
-        // 2. O Ícone (Quadrado Verde Simulado, como no seu Figma)
-        JPanel iconPanel = new JPanel();
-        iconPanel.setBounds(75, 30, 50, 50); // Centralizado no topo do card
-        iconPanel.setBackground(COR_VERDE_NEON);
-        card.add(iconPanel);
-
-        // 3. O Nome da Coleção
-        JLabel lblNome = new JLabel(nomeColecao, SwingConstants.CENTER);
-        lblNome.setForeground(Color.WHITE);
-        lblNome.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblNome.setBounds(10, 110, 180, 20);
-        card.add(lblNome);
-
-        // 4. A Quantidade
-        JLabel lblQtd = new JLabel(qtdItens + " jogos", SwingConstants.CENTER);
-        lblQtd.setForeground(Color.LIGHT_GRAY);
-        lblQtd.setBounds(10, 135, 180, 20);
-        card.add(lblQtd);
-
-        // 5. Adiciona o card pronto na tela (no seu JPanel que usa FlowLayout)
-        pnlContainerCards.add(card);
-    }
 }
