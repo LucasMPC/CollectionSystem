@@ -7,6 +7,10 @@
  *
  * @author l3huz
  */
+
+import java.awt.Color;
+import java.util.List;
+
 public class TelaDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaDashboard.class.getName());
@@ -16,6 +20,79 @@ public class TelaDashboard extends javax.swing.JFrame {
      */
     public TelaDashboard() {
         initComponents();
+        configurarDashboard();
+        this.setLocationRelativeTo(null);
+    }
+    
+    private void configurarDashboard() {
+        // 1. BOAS VINDAS
+        if (DadosTemporarios.usuarioLogado != null) {
+            // Pega o nome do usuário logado
+            lblUsuario.setText("Bem-vindo, " + DadosTemporarios.usuarioLogado.getNome() + "!");
+        }
+
+        // 2. CONTAGEM DE DADOS
+        int qtdColecoes = 0;
+        int totalJogos = 0;
+
+        // Varre todas as coleções do sistema
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            // Filtra apenas as do usuário logado
+            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                qtdColecoes++; // Conta +1 coleção
+                totalJogos += c.getListaJogos().size(); // Soma os jogos dessa coleção
+            }
+        }
+
+        // Atualiza os Labels
+        lblQtdColecoes.setText(String.valueOf(qtdColecoes));
+        lblTotalJogos.setText(String.valueOf(totalJogos)); // Verifique se o nome é lblTotalJogos ou lblQtdJogos
+        
+        // 3. ÚLTIMO JOGO CADASTRADO
+        lblUltimoJogo.setText(DadosTemporarios.nomeUltimoJogoCadastrado);
+
+        // 4. ACESSO RÁPIDO (Botões)
+        configurarBotoesAcessoRapido();
+    }
+    
+    private void configurarBotoesAcessoRapido() {
+        List<String> historico = DadosTemporarios.historicoAcesso;
+        
+        // Reset visual dos botões (caso não tenha histórico)
+        btnAcessoRapido1.setText("---");
+        btnAcessoRapido1.setEnabled(false);
+        
+        btnAcessoRapido2.setText("---");
+        btnAcessoRapido2.setEnabled(false);
+
+        // BOTÃO 1 (Última acessada - Índice 0)
+        if (historico.size() >= 1) {
+            String nomeCol1 = historico.get(0);
+            // Verifica se a coleção ainda existe (caso tenha sido excluída em algum momento futuro)
+            if (existeColecao(nomeCol1)) {
+                btnAcessoRapido1.setText(nomeCol1);
+                btnAcessoRapido1.setEnabled(true);
+            }
+        }
+
+        // BOTÃO 2 (Penúltima acessada - Índice 1)
+        if (historico.size() >= 2) {
+            String nomeCol2 = historico.get(1);
+            if (existeColecao(nomeCol2)) {
+                btnAcessoRapido2.setText(nomeCol2);
+                btnAcessoRapido2.setEnabled(true);
+            }
+        }
+    }
+    
+    // Método auxiliar para verificar se coleção existe do usuário logado
+    private boolean existeColecao(String nome) {
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            if (c.getNome().equals(nome) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -32,10 +109,10 @@ public class TelaDashboard extends javax.swing.JFrame {
         btnMenuColecoes = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        lblBemVindo = new javax.swing.JLabel();
+        lblUsuario = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        lblTotalColecoes = new javax.swing.JLabel();
+        lblQtdColecoes = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         lblTotalJogos = new javax.swing.JLabel();
@@ -77,6 +154,11 @@ public class TelaDashboard extends javax.swing.JFrame {
         btnSair.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnSair.setForeground(new java.awt.Color(255, 255, 255));
         btnSair.setText("SAIR");
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -106,9 +188,9 @@ public class TelaDashboard extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(30, 30, 30));
 
-        lblBemVindo.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        lblBemVindo.setForeground(new java.awt.Color(255, 255, 255));
-        lblBemVindo.setText("Bem-vindo, Usuário");
+        lblUsuario.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        lblUsuario.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsuario.setText("Bem-vindo, Usuário");
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -116,10 +198,10 @@ public class TelaDashboard extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Total de Coleções:");
 
-        lblTotalColecoes.setBackground(new java.awt.Color(0, 230, 118));
-        lblTotalColecoes.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblTotalColecoes.setForeground(new java.awt.Color(0, 230, 118));
-        lblTotalColecoes.setText("XXXX");
+        lblQtdColecoes.setBackground(new java.awt.Color(0, 230, 118));
+        lblQtdColecoes.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblQtdColecoes.setForeground(new java.awt.Color(0, 230, 118));
+        lblQtdColecoes.setText("XXXX");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -129,7 +211,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTotalColecoes)
+                .addComponent(lblQtdColecoes)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -138,7 +220,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(lblTotalColecoes))
+                    .addComponent(lblQtdColecoes))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -213,10 +295,20 @@ public class TelaDashboard extends javax.swing.JFrame {
         btnAcessoRapido2.setBackground(new java.awt.Color(0, 230, 118));
         btnAcessoRapido2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAcessoRapido2.setText("JOGOS DE PS4");
+        btnAcessoRapido2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcessoRapido2ActionPerformed(evt);
+            }
+        });
 
         btnAcessoRapido1.setBackground(new java.awt.Color(0, 230, 118));
         btnAcessoRapido1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAcessoRapido1.setText("JOGOS DE PC");
+        btnAcessoRapido1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcessoRapido1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -226,7 +318,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(242, 242, 242)
-                        .addComponent(lblBemVindo))
+                        .addComponent(lblUsuario))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,7 +342,7 @@ public class TelaDashboard extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addComponent(lblBemVindo)
+                .addComponent(lblUsuario)
                 .addGap(31, 31, 31)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -279,6 +371,29 @@ public class TelaDashboard extends javax.swing.JFrame {
         new TelaColecoes().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnMenuColecoesActionPerformed
+
+    private void btnAcessoRapido1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcessoRapido1ActionPerformed
+        String nomeColecao = btnAcessoRapido1.getText();
+        new TelaListaJogos(nomeColecao).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnAcessoRapido1ActionPerformed
+
+    private void btnAcessoRapido2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcessoRapido2ActionPerformed
+        String nomeColecao = btnAcessoRapido2.getText();
+        new TelaListaJogos(nomeColecao).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnAcessoRapido2ActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        // 1. Limpa o usuário da memória (Logout)
+        DadosTemporarios.usuarioLogado = null;
+        
+        // 2. Volta para a tela de Login
+        new TelaLogin().setVisible(true);
+        
+        // 3. Fecha a tela atual
+        this.dispose();
+    }//GEN-LAST:event_btnSairActionPerformed
 
     /**
      * @param args the command line arguments
@@ -320,9 +435,9 @@ public class TelaDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JLabel lblBemVindo;
-    private javax.swing.JLabel lblTotalColecoes;
+    private javax.swing.JLabel lblQtdColecoes;
     private javax.swing.JLabel lblTotalJogos;
     private javax.swing.JLabel lblUltimoJogo;
+    private javax.swing.JLabel lblUsuario;
     // End of variables declaration//GEN-END:variables
 }

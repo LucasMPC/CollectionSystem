@@ -14,11 +14,26 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     /**
      * Creates new form TelaCadastroJogo
      */
+    
+    private String nomeColecaoOrigem;
+    
     public TelaCadastroJogo() {
         initComponents();
+    }
+    
+    public TelaCadastroJogo(String origem) {
+        initComponents();
+        this.nomeColecaoOrigem = origem;
         carregarCombosFixos();
         carregarDesenvolvedoras();
         carregarColecoes();
+        
+        // Tenta selecionar automaticamente a coleção de origem no combobox
+        if (origem != null) {
+            cmbColecao.setSelectedItem(origem);
+        }
+        
+        this.setLocationRelativeTo(null);
     }
     
     private void carregarDesenvolvedoras() {
@@ -121,6 +136,11 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         btnSair.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnSair.setForeground(new java.awt.Color(255, 255, 255));
         btnSair.setText("SAIR");
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -386,7 +406,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbMidiaActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new TelaDashboard().setVisible(true);
+        new TelaListaJogos(this.nomeColecaoOrigem).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -435,6 +455,8 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
             Jogo novoJogo = new Jogo(nomeJogo, dataLancamento, descricao, devObjeto, genero, midia);
             
             colecaoAlvo.adicionarJogo(novoJogo);
+            
+            DadosTemporarios.nomeUltimoJogoCadastrado = novoJogo.getNome();
         
             javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo na coleção '" + nomeColecao + "'!");
         
@@ -456,6 +478,17 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     private void cmbDesenvolvedoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDesenvolvedoraActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbDesenvolvedoraActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        // 1. Limpa o usuário da memória (Logout)
+        DadosTemporarios.usuarioLogado = null;
+        
+        // 2. Volta para a tela de Login
+        new TelaLogin().setVisible(true);
+        
+        // 3. Fecha a tela atual
+        this.dispose();
+    }//GEN-LAST:event_btnSairActionPerformed
 
     /**
      * @param args the command line arguments
