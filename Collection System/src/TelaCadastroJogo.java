@@ -16,6 +16,17 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
      */
     public TelaCadastroJogo() {
         initComponents();
+        carregarDesenvolvedoras();
+    }
+    
+    private void carregarDesenvolvedoras() {
+        cmbDesenvolvedora.removeAllItems(); // Limpa os itens padrão
+        cmbDesenvolvedora.addItem("Selecione...");
+    
+        // Pega a lista lá do arquivo DadosTemporarios
+        for (Desenvolvedora dev : DadosTemporarios.listaDesenvolvedoras) {
+            cmbDesenvolvedora.addItem(dev.getNome());
+        }
     }
 
     /**
@@ -40,7 +51,6 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         cmbColecao = new javax.swing.JComboBox<>();
         btnSalvar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        txtDesenvolvedora = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -51,6 +61,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         txtDescricao = new javax.swing.JTextArea();
         cmbGenero = new javax.swing.JComboBox<>();
         cmbMidia = new javax.swing.JComboBox<>();
+        cmbDesenvolvedora = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -155,8 +166,6 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
             }
         });
 
-        txtDesenvolvedora.setBackground(new java.awt.Color(220, 220, 220));
-
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Desenvolvedora:");
@@ -200,6 +209,14 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
             }
         });
 
+        cmbDesenvolvedora.setBackground(new java.awt.Color(220, 220, 220));
+        cmbDesenvolvedora.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbDesenvolvedora.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbDesenvolvedoraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -210,7 +227,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(txtDesenvolvedora, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cmbDesenvolvedora, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(66, 66, 66)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -272,8 +289,8 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtDesenvolvedora, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbMidia, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cmbMidia, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbDesenvolvedora, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(39, 39, 39)))
@@ -349,7 +366,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         // 1. Captura os dados
         String nomeJogo = txtNome.getText();
         String dataLancamento = txtData.getText(); 
-        String desenvolvedora = txtDesenvolvedora.getText(); // <-- Mudou aqui!
+        String desenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
         String tipoMidia = (String) cmbMidia.getSelectedItem();
         String genero = (String) cmbGenero.getSelectedItem();
         String colecao = (String) cmbColecao.getSelectedItem();
@@ -376,14 +393,18 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         // 4. Limpar os campos para o próximo cadastro
         txtNome.setText("");
         txtData.setText("");
-        txtDesenvolvedora.setText("");
         txtDescricao.setText("");
     
         // Reseta as ComboBoxes restantes para o primeiro item
+        cmbDesenvolvedora.setSelectedIndex(0);
         cmbMidia.setSelectedIndex(0);
         cmbGenero.setSelectedIndex(0);
     
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void cmbDesenvolvedoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDesenvolvedoraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbDesenvolvedoraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -417,6 +438,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     private javax.swing.JButton btnSair;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<String> cmbColecao;
+    private javax.swing.JComboBox<String> cmbDesenvolvedora;
     private javax.swing.JComboBox<String> cmbGenero;
     private javax.swing.JComboBox<String> cmbMidia;
     private javax.swing.JLabel jLabel1;
@@ -433,7 +455,6 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtData;
     private javax.swing.JTextArea txtDescricao;
-    private javax.swing.JTextField txtDesenvolvedora;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
 }
