@@ -162,11 +162,12 @@ public class TelaColecoes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMenuInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuInicioActionPerformed
-        // TODO add your handling code here:
+        new TelaDashboard().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMenuInicioActionPerformed
 
     private void btnMenuColecoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuColecoesActionPerformed
-        // TODO add your handling code here:
+        javax.swing.JOptionPane.showMessageDialog(this, "Você já esta aqui!");
     }//GEN-LAST:event_btnMenuColecoesActionPerformed
 
     private void btnCriarColecaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarColecaoActionPerformed

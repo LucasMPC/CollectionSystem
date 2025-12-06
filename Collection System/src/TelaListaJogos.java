@@ -156,6 +156,11 @@ public TelaListaJogos(String nomeColecao) {
         btnAdicionarJogo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAdicionarJogo.setForeground(new java.awt.Color(255, 255, 255));
         btnAdicionarJogo.setText("Adicionar Jogo");
+        btnAdicionarJogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarJogoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -199,12 +204,19 @@ public TelaListaJogos(String nomeColecao) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMenuInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuInicioActionPerformed
-        // TODO add your handling code here:
+        new TelaDashboard().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMenuInicioActionPerformed
 
     private void btnMenuColecoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuColecoesActionPerformed
-        // TODO add your handling code here:
+        new TelaColecoes().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMenuColecoesActionPerformed
+
+    private void btnAdicionarJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarJogoActionPerformed
+        new TelaCadastroJogo().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnAdicionarJogoActionPerformed
 
     /**
      * @param args the command line arguments
