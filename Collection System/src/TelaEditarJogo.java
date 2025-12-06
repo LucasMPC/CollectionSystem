@@ -15,23 +15,32 @@ public class TelaEditarJogo extends javax.swing.JFrame {
      * Creates new form TelaCadastroJogo
      */
     // Método para simular que recebemos um jogo para editar
-    private void preencherDadosExemplo() {
-        txtNome.setText("God of War");
-        txtData.setText("20/04/2018");
-        txtDescricao.setText("Kratos vive agora como um homem no reino dos deuses e monstros nórdicos.");
+    private Jogo jogoEdicao;
     
-        // Selecionando itens nos ComboBox (Simulação)
-        // Certifique-se que esses itens existam na propriedade "model" do seu design, 
-        // ou use setSelectedIndex(1) para pegar o segundo item da lista
-        cmbDesenvolvedora.setSelectedItem("Santa Monica Studio");
-        cmbMidia.setSelectedItem("Físico"); 
-        cmbGenero.setSelectedItem("Ação"); 
-        cmbColecao.setSelectedItem("Meus Favoritos");
-    }
     public TelaEditarJogo() {
         initComponents();
+    }
+    
+    public TelaEditarJogo(Jogo jogoParaEditar) {
+        initComponents();
+        this.jogoEdicao = jogoParaEditar;
+        carregarCombosFixos();
         carregarDesenvolvedoras();
-        preencherDadosExemplo();
+        preencherDadosReais();
+    }
+    
+    private void carregarCombosFixos() {
+        cmbGenero.removeAllItems();
+        cmbGenero.addItem("Ação");
+        cmbGenero.addItem("Aventura");
+        cmbGenero.addItem("RPG");
+        cmbGenero.addItem("FPS");
+        cmbGenero.addItem("Corrida");
+        cmbGenero.addItem("Outros");
+
+        cmbMidia.removeAllItems();
+        cmbMidia.addItem("Físico");
+        cmbMidia.addItem("Digital");
     }
     
     private void carregarDesenvolvedoras() {
@@ -40,6 +49,21 @@ public class TelaEditarJogo extends javax.swing.JFrame {
         for (Desenvolvedora dev : DadosTemporarios.listaDesenvolvedoras) {
             cmbDesenvolvedora.addItem(dev.getNome());
         }
+    }
+    
+    private void preencherDadosReais() {
+        txtNome.setText(jogoEdicao.getNome());
+        txtData.setText(jogoEdicao.getDataLancamento());
+        txtDescricao.setText(jogoEdicao.getDescricao());
+        
+        // Seleciona os itens nas ComboBoxes
+        cmbDesenvolvedora.setSelectedItem(jogoEdicao.getDesenvolvedora().getNome());
+        cmbGenero.setSelectedItem(jogoEdicao.getGenero());
+        cmbMidia.setSelectedItem(jogoEdicao.getTipoMidia());
+        
+        // Coleção é fixa na edição (já está dentro dela), então podemos desabilitar ou apenas mostrar
+        cmbColecao.addItem("Coleção Atual"); 
+        cmbColecao.setEnabled(false);
     }
 
     /**
@@ -374,28 +398,33 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // 1. Captura os dados
-        String nomeJogo = txtNome.getText();
-        String dataLancamento = txtData.getText(); 
-        String desenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
-        String tipoMidia = (String) cmbMidia.getSelectedItem();
-        String genero = (String) cmbGenero.getSelectedItem();
-        String colecao = (String) cmbColecao.getSelectedItem();
-        String descricao = txtDescricao.getText(); 
+        // 1. Captura o que o usuário mudou
+        String novoNome = txtNome.getText();
+        String novaData = txtData.getText();
+        String novaDesc = txtDescricao.getText();
+        String novoGenero = (String) cmbGenero.getSelectedItem();
+        String novaMidia = (String) cmbMidia.getSelectedItem();
+        String novaDevNome = (String) cmbDesenvolvedora.getSelectedItem();
 
-        // 2. Validação Simples
-        if (nomeJogo.isEmpty() || desenvolvedora.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, preencha o Nome e a Desenvolvedora.");
-            return;
+        // 2. Busca o objeto desenvolvedora real
+        Desenvolvedora novaDev = null;
+        for(Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras){
+            if(d.getNome().equals(novaDevNome)) novaDev = d;
         }
+        if(novaDev == null) novaDev = new Desenvolvedora(novaDevNome, "N/A", "N/A");
 
-        // 3. Simulação de Atualização
-        javax.swing.JOptionPane.showMessageDialog(this, "Sucesso!\n\nOs dados do jogo '" + nomeJogo + "' foram atualizados.");
+        // 3. ATUALIZA O OBJETO REAL (Usando os Setters do Passo 1)
+        jogoEdicao.setNome(novoNome);
+        jogoEdicao.setDataLancamento(novaData);
+        jogoEdicao.setDescricao(novaDesc);
+        jogoEdicao.setGenero(novoGenero);
+        jogoEdicao.setTipoMidia(novaMidia);
+        jogoEdicao.setDesenvolvedora(novaDev);
 
-        // 4. Fechar a janela e voltar (Lógica de Edição Única)
-        this.dispose(); 
-        new TelaListaJogos("TESTE DE FLUXO").setVisible(true);
-    
+        javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
+        
+        // 4. Fecha e reabre a lista para ver a mudança
+        this.dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void cmbDesenvolvedoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDesenvolvedoraActionPerformed

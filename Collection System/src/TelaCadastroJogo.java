@@ -16,7 +16,9 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
      */
     public TelaCadastroJogo() {
         initComponents();
+        carregarCombosFixos();
         carregarDesenvolvedoras();
+        carregarColecoes();
     }
     
     private void carregarDesenvolvedoras() {
@@ -26,6 +28,32 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
         // Pega a lista lá do arquivo DadosTemporarios
         for (Desenvolvedora dev : DadosTemporarios.listaDesenvolvedoras) {
             cmbDesenvolvedora.addItem(dev.getNome());
+        }
+    }
+    
+    private void carregarCombosFixos() {
+        cmbGenero.removeAllItems();
+        cmbGenero.addItem("Ação");
+        cmbGenero.addItem("Aventura");
+        cmbGenero.addItem("RPG");
+        cmbGenero.addItem("FPS");
+        cmbGenero.addItem("Corrida");
+        cmbGenero.addItem("Outros");
+
+        cmbMidia.removeAllItems();
+        cmbMidia.addItem("Físico");
+        cmbMidia.addItem("Digital");
+    }
+    
+    private void carregarColecoes() {
+        cmbColecao.removeAllItems();
+        // cmbColecao.addItem("Selecione..."); // Opcional, mas ajuda na validação
+    
+        // Varre a lista de coleções e adiciona apenas as do usuário logado
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                cmbColecao.addItem(c.getNome());
+            }
         }
     }
 
@@ -363,37 +391,60 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        
         // 1. Captura os dados
         String nomeJogo = txtNome.getText();
-        String dataLancamento = txtData.getText(); 
-        String desenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
-        String tipoMidia = (String) cmbMidia.getSelectedItem();
+        String dataLancamento = txtData.getText();
+        String nomeDesenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
+        String nomeColecao = (String) cmbColecao.getSelectedItem(); 
+        String midia = (String) cmbMidia.getSelectedItem();
         String genero = (String) cmbGenero.getSelectedItem();
-        String colecao = (String) cmbColecao.getSelectedItem();
-        String descricao = txtDescricao.getText(); 
+        String descricao = txtDescricao.getText();
 
-        // 2. Validação Simples
-        if (nomeJogo.isEmpty() || desenvolvedora.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, preencha o Nome e a Desenvolvedora.");
-            return;
+        // 2. Validações
+        if (nomeJogo.isEmpty() || nomeColecao == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Preencha o nome e selecione uma coleção!");
+        return;
         }
 
-        // 3. Simulação (Mostra o que seria salvo)
-        String mensagem = "DADOS PRONTOS PARA SALVAR:\n\n" +
-                        "Nome: " + nomeJogo + "\n" +
-                        "Lançamento: " + dataLancamento + "\n" +
-                        "Desenvolvedora: " + desenvolvedora + "\n" + // Exibe o texto digitado
-                        "Mídia: " + tipoMidia + "\n" +
-                        "Gênero: " + genero + "\n" +
-                        "Coleção: " + colecao + "\n" +
-                        "Descrição: " + descricao;
+        // 3. ENCONTRAR OS OBJETOS REAIS
+    
+        // A. Achar a Desenvolvedora na lista (pelo nome)
+        Desenvolvedora devObjeto = null;
+        for (Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras) {
+            if (d.getNome().equals(nomeDesenvolvedora)) {
+                devObjeto = d;
+                break;
+            }
+        }
+        
+        // Se não achou (caso o usuário não selecionou), cria uma genérica ou usa null
+        if (devObjeto == null) devObjeto = new Desenvolvedora(nomeDesenvolvedora, "N/A", "N/A");
 
-        javax.swing.JOptionPane.showMessageDialog(this, mensagem);
+        // B. Achar a Coleção na lista (pelo nome)
+        Colecao colecaoAlvo = null;
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            if (c.getNome().equals(nomeColecao) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                colecaoAlvo = c;
+                break;
+        }
+    }
 
-        // 4. Limpar os campos para o próximo cadastro
-        txtNome.setText("");
-        txtData.setText("");
-        txtDescricao.setText("");
+        if (colecaoAlvo != null) {
+            // 4. CRIA O JOGO E ADICIONA NA COLEÇÃO
+            Jogo novoJogo = new Jogo(nomeJogo, dataLancamento, descricao, devObjeto, genero, midia);
+            
+            colecaoAlvo.adicionarJogo(novoJogo);
+        
+            javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo na coleção '" + nomeColecao + "'!");
+        
+            // Limpa campos
+            txtNome.setText("");
+            txtDescricao.setText("");
+        
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: Coleção não encontrada.");
+        }
     
         // Reseta as ComboBoxes restantes para o primeiro item
         cmbDesenvolvedora.setSelectedIndex(0);

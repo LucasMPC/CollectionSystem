@@ -20,55 +20,81 @@ public class TelaListaJogos extends javax.swing.JFrame {
     /**
      * Creates new form TelaListaJogos
      */
-    // Cores
-    private final Color COR_HEADER_TABELA = new Color(30, 30, 30); // Cinza Chumbo
-    private final Color COR_TEXTO_BRANCO = Color.WHITE;
-    private final Color COR_VERDE_NEON = new Color(0, 230, 118);
+    private String nomeColecaoAtual;
 
     private void configurarTabelaJogos() {
-        // 1. Definir as colunas da tabela
-        Object[] colunas = {"Capa", "Nome", "Ano", "Gênero", "Ações"}; // Nomes do seu Figma
+        // 1. Cores do Corpo da Tabela
+        tabelaJogos.setBackground(new Color(30, 30, 30)); // Fundo Cinza Escuro
+        tabelaJogos.setForeground(Color.WHITE);           // Letra Branca
+        tabelaJogos.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Letra maior
+        tabelaJogos.setRowHeight(30);
+        
+        // 1.1 Cores do Cabeçalho (Header)
+        javax.swing.table.JTableHeader header = tabelaJogos.getTableHeader();
+        header.setBackground(new Color(0, 230, 118)); // Verde Neon
+        header.setForeground(Color.BLACK);            // Letra Preta (Contraste Máximo)
+        header.setFont(new Font("Segoe UI", Font.BOLD, 14)); // Negrito
+        header.setBorder(javax.swing.BorderFactory.createEmptyBorder()); 
+        
+        // 1.2 Cor da área vazia do scroll
+        scrollPaneTabela.getViewport().setBackground(new Color(30, 30, 30));
 
-        // 2. Simular dados
+        // 2. Definir Colunas (Ajustado para os dados que temos no objeto Jogo)
+        String[] colunas = {"Nome", "Ano", "Dev", "Gênero", "Mídia"};
+    
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.setColumnIdentifiers(colunas);
+        modelo.setRowCount(0);
 
-        // Dados de exemplo (Mock Data)
-        Object[][] dados = {
-            {"[Capa]", "God of War", "2018", "Ação", "[Editar/Excluir]"},
-            {"[Capa]", "The Last of Us", "2013", "Aventura", "[Editar/Excluir]"},
-            {"[Capa]", "Doom Eternal", "2020", "FPS", "[Editar/Excluir]"}
-        };
+        // 3. BUSCAR DADOS REAIS
+        // Primeiro, limpa a tabela
+        modelo.setRowCount(0);
 
-        for (Object[] linha : dados) {
-            modelo.addRow(linha);
+        // Procura a coleção certa na memória
+        Colecao colecaoEncontrada = null;
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            // Verifica se o nome bate E se pertence ao usuário logado
+            if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                colecaoEncontrada = c;
+                break;
+            }
+        }
+
+        // Se achou a coleção, adiciona os jogos dela na tabela
+        if (colecaoEncontrada != null) {
+            for (Jogo jogo : colecaoEncontrada.getListaJogos()) {
+            modelo.addRow(new Object[]{
+                jogo.getNome(),
+                jogo.getDataLancamento(),
+                jogo.getDesenvolvedora().getNome(),
+                jogo.getGenero(),
+                jogo.getTipoMidia()
+            });
+            }
+        } else {
+            System.out.println("Coleção não encontrada ou vazia.");
         }
     
-        // 3. Aplicar o modelo na JTable
+        // 4. Aplica o modelo na JTable
         tabelaJogos.setModel(modelo);
-
-        // 4. Estilizar o cabeçalho (Para ficar Dark Mode)
-        tabelaJogos.setBackground(new Color(18, 18, 18)); // Fundo da tabela: Preto
-        tabelaJogos.setForeground(COR_TEXTO_BRANCO); // Cor do texto da tabela: Branco
-    
-        // Configura a cor do cabeçalho
-        tabelaJogos.getTableHeader().setBackground(COR_HEADER_TABELA);
-        tabelaJogos.getTableHeader().setForeground(COR_TEXTO_BRANCO);
-    
-        // Estilo da barra de rolagem (opcional, mas melhora a visualizacao)
-        scrollPaneTabela.getViewport().setBackground(new Color(18, 18, 18)); 
     }
 
-// Chame no construtor:
-public TelaListaJogos(String nomeColecao) {
-    initComponents();
-    
-    // 1. ATUALIZA o texto do cabeçalho com o nome da coleção
-    lblNomeColecao.setText(nomeColecao); 
-    
-    // 2. Configura a tabela
-    configurarTabelaJogos();
-}
+    //Construtor
+    public TelaListaJogos(String nomeColecao) {
+        initComponents();
+        this.nomeColecaoAtual = nomeColecao; 
+        lblNomeColecao.setText(nomeColecao); 
+        configurarTabelaJogos();
+        
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowActivated(java.awt.event.WindowEvent e) {
+                configurarTabelaJogos();
+            }
+        });
+        
+        this.setLocationRelativeTo(null);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,6 +112,8 @@ public TelaListaJogos(String nomeColecao) {
         jPanel2 = new javax.swing.JPanel();
         lblNomeColecao = new javax.swing.JLabel();
         btnAdicionarJogo = new javax.swing.JButton();
+        btnExcluirJogo = new javax.swing.JButton();
+        btnEditarJogo = new javax.swing.JButton();
         scrollPaneTabela = new javax.swing.JScrollPane();
         tabelaJogos = new javax.swing.JTable();
 
@@ -155,10 +183,30 @@ public TelaListaJogos(String nomeColecao) {
         btnAdicionarJogo.setBackground(new java.awt.Color(0, 230, 118));
         btnAdicionarJogo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAdicionarJogo.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdicionarJogo.setText("Adicionar Jogo");
+        btnAdicionarJogo.setText("ADICIONAR JOGO");
         btnAdicionarJogo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAdicionarJogoActionPerformed(evt);
+            }
+        });
+
+        btnExcluirJogo.setBackground(new java.awt.Color(51, 51, 51));
+        btnExcluirJogo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnExcluirJogo.setForeground(new java.awt.Color(255, 255, 255));
+        btnExcluirJogo.setText("EXCLUIR JOGO");
+        btnExcluirJogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirJogoActionPerformed(evt);
+            }
+        });
+
+        btnEditarJogo.setBackground(new java.awt.Color(0, 230, 118));
+        btnEditarJogo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnEditarJogo.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditarJogo.setText("EDITAR JOGO");
+        btnEditarJogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarJogoActionPerformed(evt);
             }
         });
 
@@ -169,9 +217,13 @@ public TelaListaJogos(String nomeColecao) {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(lblNomeColecao)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 408, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addComponent(btnExcluirJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditarJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAdicionarJogo)
-                .addGap(40, 40, 40))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,11 +231,16 @@ public TelaListaJogos(String nomeColecao) {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNomeColecao)
-                    .addComponent(btnAdicionarJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdicionarJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExcluirJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEditarJogo, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, -1));
+
+        scrollPaneTabela.setBackground(new java.awt.Color(30, 30, 30));
+        scrollPaneTabela.setForeground(new java.awt.Color(255, 255, 255));
 
         tabelaJogos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -218,6 +275,59 @@ public TelaListaJogos(String nomeColecao) {
         this.dispose();
     }//GEN-LAST:event_btnAdicionarJogoActionPerformed
 
+    private void btnExcluirJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirJogoActionPerformed
+        // 1. Verifica qual linha está selecionada
+        int linhaSelecionada = tabelaJogos.getSelectedRow();
+    
+        if (linhaSelecionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione um jogo na tabela para excluir.");
+            return;
+        }
+
+        // 2. Confirmação
+        int resposta = javax.swing.JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este jogo?", "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
+    
+        if (resposta == javax.swing.JOptionPane.YES_OPTION) {
+        
+            // 3. Busca a coleção atual
+            for (Colecao c : DadosTemporarios.listaColecoes) {
+                if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                
+                    // 4. Remove o jogo da lista (Baseado no índice da tabela)
+                    c.getListaJogos().remove(linhaSelecionada);
+                
+                    // 5. Atualiza a tabela
+                    configurarTabelaJogos();
+                    javax.swing.JOptionPane.showMessageDialog(this, "Jogo excluído!");
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_btnExcluirJogoActionPerformed
+
+    private void btnEditarJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarJogoActionPerformed
+        int linhaSelecionada = tabelaJogos.getSelectedRow();
+    
+        if (linhaSelecionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione um jogo para editar.");
+            return;
+        }
+
+        // Encontra o objeto Jogo real na lista
+        Jogo jogoParaEditar = null;
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                jogoParaEditar = c.getListaJogos().get(linhaSelecionada);
+                break;
+            }
+        }
+
+        if (jogoParaEditar != null) {      
+            TelaEditarJogo telaEdicao = new TelaEditarJogo(jogoParaEditar);
+            telaEdicao.setVisible(true);
+        }
+    }//GEN-LAST:event_btnEditarJogoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -245,6 +355,8 @@ public TelaListaJogos(String nomeColecao) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionarJogo;
+    private javax.swing.JButton btnEditarJogo;
+    private javax.swing.JButton btnExcluirJogo;
     private javax.swing.JButton btnMenuColecoes;
     private javax.swing.JButton btnMenuInicio;
     private javax.swing.JButton btnSair;

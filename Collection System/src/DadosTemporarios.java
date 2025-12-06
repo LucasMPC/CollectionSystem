@@ -31,5 +31,6 @@ public class DadosTemporarios {
         listaDesenvolvedoras.add(new Desenvolvedora("Nintendo", "Japão", "1889"));
         listaDesenvolvedoras.add(new Desenvolvedora("Sony Santa Monica", "EUA", "1999"));
         listaDesenvolvedoras.add(new Desenvolvedora("Ubisoft", "França", "1986"));
+        listaDesenvolvedoras.add(new Desenvolvedora("Capcom", "Japão", "1979"));
     }
 }
