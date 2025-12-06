@@ -17,6 +17,8 @@ public class DadosTemporarios {
     // Lista de Desenvolvedoras (para preencher seu ComboBox depois)
     public static List<Desenvolvedora> listaDesenvolvedoras = new ArrayList<>();
     
+    public static List<Colecao> listaColecoes = new ArrayList<>();
+    
     // Variável para saber quem está logado no momento
     public static Usuario usuarioLogado = null;
 

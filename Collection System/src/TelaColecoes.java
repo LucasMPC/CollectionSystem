@@ -25,17 +25,28 @@ public class TelaColecoes extends javax.swing.JFrame {
      */
     public TelaColecoes() {
         initComponents();
+        carregarColecoesDinamicas();
+    }
     
-        // --- SIMULAÇÃO DE DADOS (Substitui o Banco de Dados por enquanto) ---
-        criarCardColecao("Jogos de PC", 42);
-        criarCardColecao("Jogos de PS4", 18);
-        criarCardColecao("Livros de RPG", 5);
-        criarCardColecao("Coleção de Revistas", 150);
-        criarCardColecao("Wishlist", 0);
-        criarCardColecao("Jogos de Switch", 10);
-        // -------------------------------------------------------------------
-    
-        // ATUALIZA o painel para que os cards apareçam
+    private void carregarColecoesDinamicas() {
+        // Limpa qualquer coisa que esteja no painel (para não duplicar)
+        pnlContainerCards.removeAll();
+
+        // Verifica se a lista está vazia
+        if (DadosTemporarios.listaColecoes.isEmpty()) {
+            // Opcional: Mostrar uma mensagem ou label dizendo "Nenhuma coleção"
+        }
+
+        // PERCORRE A LISTA REAL DE COLEÇÕES
+        for (Colecao c : DadosTemporarios.listaColecoes) {
+            // Verifica se a coleção pertence ao usuário logado (opcional, mas bom pra lógica)
+            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
+                // Chama o criador de card passando os dados reais
+                criarCardColecao(c.getNome(), c.getIcone(), c.getListaJogos().size());
+            }
+        }
+
+        // Atualiza a tela
         pnlContainerCards.revalidate();
         pnlContainerCards.repaint();
     }
@@ -215,27 +226,37 @@ public class TelaColecoes extends javax.swing.JFrame {
     private final Color COR_VERDE_NEON = new Color(0, 230, 118); // #00E676
 
     // Método que cria um card visualmente e o adiciona ao container
-    private void criarCardColecao(String nomeColecao, int qtdItens) {
-        // 1. O Fundo do Card (JPanel)
+    private void criarCardColecao(String nomeColecao, String nomeIcone, int qtdItens) {
+        // 1. O Fundo do Card
         JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(200, 200)); // Tamanho do quadrado (aprox)
+        card.setPreferredSize(new Dimension(200, 200));
         card.setBackground(COR_CARD);
-        card.setLayout(null); // Layout interno absoluto para posicionar texto e ícone
+        card.setLayout(null);
 
-        // Adiciona um evento simples de clique (simula a abertura da lista de jogos)
+        // Ação de clique
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TelaListaJogos lista = new TelaListaJogos(nomeColecao); 
                 lista.setVisible(true);
                 dispose();
             }
         });
 
-        // 2. O Ícone (Quadrado Verde Simulado, como no seu Figma)
+        // 2. O Ícone (Quadrado Verde)
         JPanel iconPanel = new JPanel();
-        iconPanel.setBounds(75, 30, 50, 50); // Centralizado no topo do card
+        iconPanel.setBounds(75, 30, 50, 50);
         iconPanel.setBackground(COR_VERDE_NEON);
+        
+        // --- TRUQUE VISUAL ---
+        // Vamos colocar a sigla ou nome do ícone dentro do quadrado verde
+        JLabel lblIconeTexto = new JLabel(nomeIcone);
+        if(nomeIcone.length() > 3) lblIconeTexto.setText(nomeIcone.substring(0, 2).toUpperCase()); // Pega só as 2 primeiras letras
+        lblIconeTexto.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblIconeTexto.setForeground(Color.WHITE); // Texto branco no fundo verde
+        iconPanel.add(lblIconeTexto); // Adiciona a letra no quadrado verde
+        // ---------------------
+        
         card.add(iconPanel);
 
         // 3. O Nome da Coleção
@@ -251,7 +272,7 @@ public class TelaColecoes extends javax.swing.JFrame {
         lblQtd.setBounds(10, 135, 180, 20);
         card.add(lblQtd);
 
-        // 5. Adiciona o card pronto na tela (no seu JPanel que usa FlowLayout)
+        // 5. Adiciona ao painel
         pnlContainerCards.add(card);
     }
 }
