@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
+import java.util.List;
 
 public class TelaListaJogos extends javax.swing.JFrame {
     
@@ -86,8 +87,9 @@ public class TelaListaJogos extends javax.swing.JFrame {
         lblNomeColecao.setText(nomeColecao); 
         configurarTabelaJogos();
         
-        DadosTemporarios.historicoAcesso.remove(nomeColecao);
-        DadosTemporarios.historicoAcesso.add(0, nomeColecao);
+        List<String> historico = DadosTemporarios.usuarioLogado.getHistoricoAcesso();
+        historico.remove(nomeColecao);
+        historico.add(0, nomeColecao);
         
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

@@ -23,6 +23,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     
     public TelaCadastroJogo(String origem) {
         initComponents();
+        adicionarMascaraData(txtData);
         this.nomeColecaoOrigem = origem;
         carregarCombosFixos();
         carregarDesenvolvedoras();
@@ -70,6 +71,30 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
                 cmbColecao.addItem(c.getNome());
             }
         }
+    }
+    
+    // Método para criar a máscara de data (DD/MM/AAAA)
+    private void adicionarMascaraData(javax.swing.JTextField campoData) {
+        campoData.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                String texto = campoData.getText();
+                // Remove tudo que não for número
+                texto = texto.replaceAll("[^0-9]", ""); 
+            
+                // Adiciona as barras conforme a quantidade de números
+                if (texto.length() >= 2 && texto.length() < 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2);
+                } else if (texto.length() >= 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2, 4) + "/" + texto.substring(4, Math.min(texto.length(), 8));
+                }
+            
+                // Só atualiza se mudou (para evitar loop) e se não estiver apagando
+                if (!texto.equals(campoData.getText()) && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
+                    campoData.setText(texto);
+                }
+            }
+        });
     }
 
     /**
@@ -411,68 +436,72 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+     // 1. Capturas
+        String nomeJogo = txtNome.getText().trim();
+        String dataLancamento = txtData.getText().trim();
+        String descricao = txtDescricao.getText().trim();
         
-        // 1. Captura os dados
-        String nomeJogo = txtNome.getText();
-        String dataLancamento = txtData.getText();
+        String nomeColecao = (String) cmbColecao.getSelectedItem();
         String nomeDesenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
-        String nomeColecao = (String) cmbColecao.getSelectedItem(); 
-        String midia = (String) cmbMidia.getSelectedItem();
         String genero = (String) cmbGenero.getSelectedItem();
-        String descricao = txtDescricao.getText();
-
-        // 2. Validações
-        if (nomeJogo.isEmpty() || nomeColecao == null) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Preencha o nome e selecione uma coleção!");
-        return;
+        String midia = (String) cmbMidia.getSelectedItem();
+        
+        // --- 2. VALIDAÇÕES NOVAS ---
+        
+        // A. Campos Vazios
+        if (nomeJogo.isEmpty() || dataLancamento.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Preencha Nome e Data!");
+            return;
         }
 
-        // 3. ENCONTRAR OS OBJETOS REAIS
-    
-        // A. Achar a Desenvolvedora na lista (pelo nome)
+        // B. Validação da ComboBox (Não aceitar "Selecione...")
+        // Nota: Assumindo que você tem "Selecione..." nas combos. Se não tiver, adicione no carregarDesenvolvedoras
+        if (!Validador.isComboValida(nomeDesenvolvedora)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma Desenvolvedora válida!");
+            return;
+        }
+
+        // C. Validação de Data Real (Impede 32/01)
+        if (!Validador.isDataValida(dataLancamento)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Data inexistente! Verifique dia e mês.");
+            return;
+        }
+
+        // --- 3. LÓGICA DE SALVAR ---
+
+        // Busca/Cria Desenvolvedora
         Desenvolvedora devObjeto = null;
         for (Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras) {
             if (d.getNome().equals(nomeDesenvolvedora)) {
-                devObjeto = d;
-                break;
+                devObjeto = d; break;
             }
         }
-        
-        // Se não achou (caso o usuário não selecionou), cria uma genérica ou usa null
         if (devObjeto == null) devObjeto = new Desenvolvedora(nomeDesenvolvedora, "N/A", "N/A");
 
-        // B. Achar a Coleção na lista (pelo nome)
+        // Busca Coleção
         Colecao colecaoAlvo = null;
         for (Colecao c : DadosTemporarios.listaColecoes) {
             if (c.getNome().equals(nomeColecao) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                colecaoAlvo = c;
-                break;
+                colecaoAlvo = c; break;
+            }
         }
-    }
 
         if (colecaoAlvo != null) {
-            // 4. CRIA O JOGO E ADICIONA NA COLEÇÃO
             Jogo novoJogo = new Jogo(nomeJogo, dataLancamento, descricao, devObjeto, genero, midia);
-            
             colecaoAlvo.adicionarJogo(novoJogo);
             
-            DadosTemporarios.nomeUltimoJogoCadastrado = novoJogo.getNome();
-        
-            javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo na coleção '" + nomeColecao + "'!");
-        
-            // Limpa campos
-            txtNome.setText("");
-            txtDescricao.setText("");
-        
+            // --- CORREÇÃO DO USUÁRIO: Salva no objeto do usuário logado ---
+            DadosTemporarios.usuarioLogado.setUltimoJogoCadastrado(novoJogo.getNome()); 
+            // -------------------------------------------------------------
+            
+            javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo!");
+            
+            new TelaListaJogos(this.nomeColecaoOrigem).setVisible(true);
+            this.dispose();
+            
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, "Erro: Coleção não encontrada.");
         }
-    
-        // Reseta as ComboBoxes restantes para o primeiro item
-        cmbDesenvolvedora.setSelectedIndex(0);
-        cmbMidia.setSelectedIndex(0);
-        cmbGenero.setSelectedIndex(0);
-    
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void cmbDesenvolvedoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDesenvolvedoraActionPerformed

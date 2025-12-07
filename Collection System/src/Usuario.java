@@ -7,12 +7,17 @@
  *
  * @author l3huz
  */
+import java.util.ArrayList;
+import java.util.List;
+
 public class Usuario {
     private String nome;
     private String email;
     private String username;
     private String senha;
     private String dataNascimento;
+    private String ultimoJogoCadastrado = "Nenhum";
+    private List<String> historicoAcesso = new ArrayList<>();
 
     public Usuario(String nome, String email, String username, String senha, String dataNascimento) {
         this.nome = nome;
@@ -41,5 +46,22 @@ public class Usuario {
     public String getDataNascimento() {
         return dataNascimento;
     }
+
+    public String getUltimoJogoCadastrado() {
+        return ultimoJogoCadastrado;
+    }
+
+    public void setUltimoJogoCadastrado(String ultimoJogoCadastrado) {
+        this.ultimoJogoCadastrado = ultimoJogoCadastrado;
+    }
+
+    public List<String> getHistoricoAcesso() {
+        return historicoAcesso;
+    }
+
+    public void setHistoricoAcesso(List<String> historicoAcesso) {
+        this.historicoAcesso = historicoAcesso;
+    }
+    
     
 }

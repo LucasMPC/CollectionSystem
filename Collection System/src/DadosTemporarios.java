@@ -21,11 +21,6 @@ public class DadosTemporarios {
     
     // Variável para saber quem está logado no momento
     public static Usuario usuarioLogado = null;
-    
-    // Guarda o nome do último jogo cadastrado globalmente
-    public static String nomeUltimoJogoCadastrado = "Nenhum";
-    
-    public static List<String> historicoAcesso = new ArrayList<>();
 
     // Bloco estático para iniciar com alguns dados de teste (Opcional)
     static {

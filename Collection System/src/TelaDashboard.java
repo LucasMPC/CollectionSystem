@@ -49,14 +49,14 @@ public class TelaDashboard extends javax.swing.JFrame {
         lblTotalJogos.setText(String.valueOf(totalJogos)); // Verifique se o nome é lblTotalJogos ou lblQtdJogos
         
         // 3. ÚLTIMO JOGO CADASTRADO
-        lblUltimoJogo.setText(DadosTemporarios.nomeUltimoJogoCadastrado);
-
+        lblUltimoJogo.setText(DadosTemporarios.usuarioLogado.getUltimoJogoCadastrado());
+        
         // 4. ACESSO RÁPIDO (Botões)
         configurarBotoesAcessoRapido();
     }
     
     private void configurarBotoesAcessoRapido() {
-        List<String> historico = DadosTemporarios.historicoAcesso;
+        List<String> historico = DadosTemporarios.usuarioLogado.getHistoricoAcesso();
         
         // Reset visual dos botões (caso não tenha histórico)
         btnAcessoRapido1.setText("---");
@@ -187,10 +187,12 @@ public class TelaDashboard extends javax.swing.JFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 770));
 
         jPanel2.setBackground(new java.awt.Color(30, 30, 30));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblUsuario.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         lblUsuario.setForeground(new java.awt.Color(255, 255, 255));
         lblUsuario.setText("Bem-vindo, Usuário");
+        jPanel2.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, -1, -1));
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -224,6 +226,8 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 115, -1, -1));
+
         jPanel4.setBackground(new java.awt.Color(51, 51, 51));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -255,6 +259,8 @@ public class TelaDashboard extends javax.swing.JFrame {
                     .addComponent(lblTotalJogos))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(429, 115, -1, 68));
 
         jPanel5.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -288,9 +294,12 @@ public class TelaDashboard extends javax.swing.JFrame {
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(102, 201, -1, -1));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Acesso Rápido");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(288, 308, -1, -1));
 
         btnAcessoRapido2.setBackground(new java.awt.Color(0, 230, 118));
         btnAcessoRapido2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -300,6 +309,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 btnAcessoRapido2ActionPerformed(evt);
             }
         });
+        jPanel2.add(btnAcessoRapido2, new org.netbeans.lib.awtextra.AbsoluteConstraints(254, 470, 324, 84));
 
         btnAcessoRapido1.setBackground(new java.awt.Color(0, 230, 118));
         btnAcessoRapido1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -309,54 +319,7 @@ public class TelaDashboard extends javax.swing.JFrame {
                 btnAcessoRapido1ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(242, 242, 242)
-                        .addComponent(lblUsuario))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(288, 288, 288)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(254, 254, 254)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAcessoRapido2, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAcessoRapido1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(117, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(lblUsuario)
-                .addGap(31, 31, 31)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAcessoRapido1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnAcessoRapido2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(216, Short.MAX_VALUE))
-        );
+        jPanel2.add(btnAcessoRapido1, new org.netbeans.lib.awtextra.AbsoluteConstraints(254, 368, 324, 84));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 850, 770));
 

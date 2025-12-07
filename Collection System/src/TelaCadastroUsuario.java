@@ -16,7 +16,32 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
      */
     public TelaCadastroUsuario() {
         initComponents();
+        adicionarMascaraData(txtNascimento);
         this.setLocationRelativeTo(null);
+    }
+    
+    // Método para criar a máscara de data (DD/MM/AAAA)
+    private void adicionarMascaraData(javax.swing.JTextField campoData) {
+        campoData.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                String texto = campoData.getText();
+                // Remove tudo que não for número
+                texto = texto.replaceAll("[^0-9]", ""); 
+            
+                // Adiciona as barras conforme a quantidade de números
+                if (texto.length() >= 2 && texto.length() < 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2);
+                } else if (texto.length() >= 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2, 4) + "/" + texto.substring(4, Math.min(texto.length(), 8));
+                }
+            
+                // Só atualiza se mudou (para evitar loop) e se não estiver apagando
+                if (!texto.equals(campoData.getText()) && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
+                    campoData.setText(texto);
+                }
+            }
+        });
     }
 
     /**
@@ -206,38 +231,37 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-       // 1. Captura dos Dados
-        String nome = txtNome.getText();
-        String email = txtEmail.getText();
-        String usuario = txtUsuario.getText();
-        String senha = new String(txtSenha.getPassword());
-        String nascimento = txtNascimento.getText();
+       // 1. Captura dados
+       String nome = txtNome.getText().trim(); 
+       String email = txtEmail.getText().trim();
+       String usuario = txtUsuario.getText().trim();
+       String senha = new String(txtSenha.getPassword());
+       String nascimento = txtNascimento.getText().trim();
 
-        // 2. Validação
-        if (nome.isEmpty() || email.isEmpty() || usuario.isEmpty() || senha.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
-            return;
-        }
+       // 2. VALIDAÇÃO DE CAMPOS VAZIOS
+       if (nome.isEmpty() || email.isEmpty() || usuario.isEmpty() || senha.isEmpty() || nascimento.isEmpty()) {
+           javax.swing.JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
+           return; 
+       }
 
-        // 3. Verifica se o usuário já existe (Regra de Negócio)
-        for (Usuario u : DadosTemporarios.listaUsuarios) {
-            if (u.getUsername().equals(usuario)) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Este nome de usuário já existe!");
-                return;
-            }
-        }
+       // 3. VALIDAÇÃO DE DATA REAL (Correção aqui)
+       // O método isDataValida verifica se o dia existe no calendário (impede 40/10, 30/02, etc)
+       if (!Validador.isDataValida(nascimento)) {
+           javax.swing.JOptionPane.showMessageDialog(this, "Data inválida ou inexistente! Verifique dia e mês.");
+           return;
+       }
 
-        // 4. CRIA O OBJETO REAL (Usando sua classe Usuario)
-        Usuario novoUsuario = new Usuario(nome, email, usuario, senha, nascimento);
+       // 4. CRIA O OBJETO REAL
+       Usuario novoUsuario = new Usuario(nome, email, usuario, senha, nascimento);
 
-        // 5. SALVA NA LISTA (Memória Temporária)
-        DadosTemporarios.listaUsuarios.add(novoUsuario);
+       // 5. SALVA NA LISTA
+       DadosTemporarios.listaUsuarios.add(novoUsuario);
 
-        javax.swing.JOptionPane.showMessageDialog(this, "Conta criada com sucesso!\nFaça login agora.");
+       javax.swing.JOptionPane.showMessageDialog(this, "Conta criada com sucesso!\nFaça login agora.");
 
-        // 6. Vai para a tela de Login
-        new TelaLogin().setVisible(true);
-        this.dispose(); 
+       // 6. Vai para a tela de Login
+       new TelaLogin().setVisible(true);
+       this.dispose();
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     /**
@@ -262,7 +286,7 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new TelaCadastroJogo().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new TelaCadastroUsuario().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

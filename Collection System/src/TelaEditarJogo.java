@@ -23,6 +23,7 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     
     public TelaEditarJogo(Jogo jogoParaEditar) {
         initComponents();
+        adicionarMascaraData(txtData);
         this.jogoEdicao = jogoParaEditar;
         carregarCombosFixos();
         carregarDesenvolvedoras();
@@ -65,6 +66,30 @@ public class TelaEditarJogo extends javax.swing.JFrame {
         // Coleção é fixa na edição (já está dentro dela), então podemos desabilitar ou apenas mostrar
         cmbColecao.addItem("Coleção Atual"); 
         cmbColecao.setEnabled(false);
+    }
+    
+    // Método para criar a máscara de data (DD/MM/AAAA)
+    private void adicionarMascaraData(javax.swing.JTextField campoData) {
+        campoData.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                String texto = campoData.getText();
+                // Remove tudo que não for número
+                texto = texto.replaceAll("[^0-9]", ""); 
+            
+                // Adiciona as barras conforme a quantidade de números
+                if (texto.length() >= 2 && texto.length() < 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2);
+                } else if (texto.length() >= 4) {
+                    texto = texto.substring(0, 2) + "/" + texto.substring(2, 4) + "/" + texto.substring(4, Math.min(texto.length(), 8));
+            }
+            
+                // Só atualiza se mudou (para evitar loop) e se não estiver apagando
+                if (!texto.equals(campoData.getText()) && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
+                    campoData.setText(texto);
+                }
+            }
+        });
     }
 
     /**
@@ -422,32 +447,69 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // 1. Captura o que o usuário mudou
-        String novoNome = txtNome.getText();
-        String novaData = txtData.getText();
-        String novaDesc = txtDescricao.getText();
+        // 1. Captura o que o usuário mudou (Com .trim() para limpar espaços)
+        String novoNome = txtNome.getText().trim();
+        String novaData = txtData.getText().trim();
+        String novaDesc = txtDescricao.getText().trim();
+        
+        // Captura dos Combos
         String novoGenero = (String) cmbGenero.getSelectedItem();
         String novaMidia = (String) cmbMidia.getSelectedItem();
         String novaDevNome = (String) cmbDesenvolvedora.getSelectedItem();
 
-        // 2. Busca o objeto desenvolvedora real
+        // --- 2. VALIDAÇÕES DE SEGURANÇA ---
+        
+        // A. Verifica se campos obrigatórios estão vazios
+        if (novoNome.isEmpty() || novaData.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "O Nome e a Data são obrigatórios!");
+            return; // Para o código aqui, não salva nada
+        }
+
+        // B. Verifica se a data está no formato DD/MM/AAAA
+        if (!novaData.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida! Use o formato 01/01/2000");
+            return;
+        }
+
+        // --- 3. LÓGICA ORIGINAL DE SALVAR (Se passou nas validações) ---
+
+        // Busca o objeto desenvolvedora real
         Desenvolvedora novaDev = null;
         for(Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras){
             if(d.getNome().equals(novaDevNome)) novaDev = d;
         }
         if(novaDev == null) novaDev = new Desenvolvedora(novaDevNome, "N/A", "N/A");
 
-        // 3. ATUALIZA O OBJETO REAL (Usando os Setters do Passo 1)
-        jogoEdicao.setNome(novoNome);
-        jogoEdicao.setDataLancamento(novaData);
-        jogoEdicao.setDescricao(novaDesc);
-        jogoEdicao.setGenero(novoGenero);
-        jogoEdicao.setTipoMidia(novaMidia);
-        jogoEdicao.setDesenvolvedora(novaDev);
+        // ATUALIZA O OBJETO REAL
+        if (jogoEdicao != null) {
+            jogoEdicao.setNome(novoNome);
+            jogoEdicao.setDataLancamento(novaData);
+            jogoEdicao.setDescricao(novaDesc);
+            jogoEdicao.setGenero(novoGenero);
+            jogoEdicao.setTipoMidia(novaMidia);
+            jogoEdicao.setDesenvolvedora(novaDev);
 
-        javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
+            javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
+            
+            // --- 4. FLUXO DE RETORNO (Reabre a Lista Atualizada) ---
+            
+            // Descobre de qual coleção esse jogo veio para voltar pra lista certa
+            String nomeColecaoDoJogo = "";
+            for (Colecao c : DadosTemporarios.listaColecoes) {
+                if (c.getListaJogos().contains(jogoEdicao)) {
+                    nomeColecaoDoJogo = c.getNome();
+                    break;
+                }
+            }
+            
+            // Reabre a lista
+            if (!nomeColecaoDoJogo.isEmpty()) {
+                new TelaListaJogos(nomeColecaoDoJogo).setVisible(true);
+            } else {
+                new TelaDashboard().setVisible(true); // Segurança
+            }
+        }
         
-        // 4. Fecha e reabre a lista para ver a mudança
         this.dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
