@@ -447,40 +447,45 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // 1. Captura o que o usuário mudou (Com .trim() para limpar espaços)
+        // 1. Captura (com trim para limpar espaços)
         String novoNome = txtNome.getText().trim();
         String novaData = txtData.getText().trim();
         String novaDesc = txtDescricao.getText().trim();
-        
-        // Captura dos Combos
         String novoGenero = (String) cmbGenero.getSelectedItem();
         String novaMidia = (String) cmbMidia.getSelectedItem();
         String novaDevNome = (String) cmbDesenvolvedora.getSelectedItem();
 
-        // --- 2. VALIDAÇÕES DE SEGURANÇA ---
-        
-        // A. Verifica se campos obrigatórios estão vazios
-        if (novoNome.isEmpty() || novaData.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "O Nome e a Data são obrigatórios!");
-            return; // Para o código aqui, não salva nada
-        }
+        // --- VALIDAÇÕES ---
 
-        // B. Verifica se a data está no formato DD/MM/AAAA
-        if (!novaData.matches("\\d{2}/\\d{2}/\\d{4}")) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida! Use o formato 01/01/2000");
+        // A. Campos Vazios
+        if (novoNome.isEmpty() || novaData.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Nome e Data são obrigatórios!");
             return;
         }
 
-        // --- 3. LÓGICA ORIGINAL DE SALVAR (Se passou nas validações) ---
+        // B. Validação da ComboBox
+        if (!Validador.isComboValida(novaDevNome)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma Desenvolvedora válida!");
+            return;
+        }
 
-        // Busca o objeto desenvolvedora real
+        // C. Validação de Data Real (AQUI ESTÁ A CORREÇÃO)
+        // Isso vai impedir 10/13/2000 ou 32/01/2000
+        if (!Validador.isDataValida(novaData)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida! Mês ou dia inexistente.");
+            return; 
+        }
+
+        // --- SALVAR ---
+
+        // Busca Dev
         Desenvolvedora novaDev = null;
         for(Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras){
             if(d.getNome().equals(novaDevNome)) novaDev = d;
         }
         if(novaDev == null) novaDev = new Desenvolvedora(novaDevNome, "N/A", "N/A");
 
-        // ATUALIZA O OBJETO REAL
+        // Atualiza Objeto
         if (jogoEdicao != null) {
             jogoEdicao.setNome(novoNome);
             jogoEdicao.setDataLancamento(novaData);
@@ -491,9 +496,7 @@ public class TelaEditarJogo extends javax.swing.JFrame {
 
             javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
             
-            // --- 4. FLUXO DE RETORNO (Reabre a Lista Atualizada) ---
-            
-            // Descobre de qual coleção esse jogo veio para voltar pra lista certa
+            // Reabre a lista certa
             String nomeColecaoDoJogo = "";
             for (Colecao c : DadosTemporarios.listaColecoes) {
                 if (c.getListaJogos().contains(jogoEdicao)) {
@@ -502,11 +505,10 @@ public class TelaEditarJogo extends javax.swing.JFrame {
                 }
             }
             
-            // Reabre a lista
             if (!nomeColecaoDoJogo.isEmpty()) {
                 new TelaListaJogos(nomeColecaoDoJogo).setVisible(true);
             } else {
-                new TelaDashboard().setVisible(true); // Segurança
+                new TelaDashboard().setVisible(true);
             }
         }
         

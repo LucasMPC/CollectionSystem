@@ -25,33 +25,42 @@ public class TelaDashboard extends javax.swing.JFrame {
     }
     
     private void configurarDashboard() {
-        // 1. BOAS VINDAS
+        // 1. BOAS VINDAS (Corrigido para usar Username e evitar texto gigante)
         if (DadosTemporarios.usuarioLogado != null) {
-            // Pega o nome do usuário logado
-            lblUsuario.setText("Bem-vindo, " + DadosTemporarios.usuarioLogado.getNome() + "!");
+            // Pega o USERNAME (Login) em vez do Nome Completo
+            String usuario = DadosTemporarios.usuarioLogado.getUsername();
+            
+            // Truque de Formatação: Se for maior que 15 letras, corta e põe "..."
+            if (usuario.length() > 15) {
+                usuario = usuario.substring(0, 15) + "...";
+            }
+            
+            lblUsuario.setText("Bem-vindo, " + usuario + "!");
         }
 
         // 2. CONTAGEM DE DADOS
         int qtdColecoes = 0;
         int totalJogos = 0;
 
-        // Varre todas as coleções do sistema
         for (Colecao c : DadosTemporarios.listaColecoes) {
-            // Filtra apenas as do usuário logado
             if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                qtdColecoes++; // Conta +1 coleção
-                totalJogos += c.getListaJogos().size(); // Soma os jogos dessa coleção
+                qtdColecoes++;
+                totalJogos += c.getListaJogos().size();
             }
         }
 
-        // Atualiza os Labels
         lblQtdColecoes.setText(String.valueOf(qtdColecoes));
-        lblTotalJogos.setText(String.valueOf(totalJogos)); // Verifique se o nome é lblTotalJogos ou lblQtdJogos
+        lblTotalJogos.setText(String.valueOf(totalJogos)); 
         
         // 3. ÚLTIMO JOGO CADASTRADO
-        lblUltimoJogo.setText(DadosTemporarios.usuarioLogado.getUltimoJogoCadastrado());
-        
-        // 4. ACESSO RÁPIDO (Botões)
+        String ultimo = DadosTemporarios.usuarioLogado.getUltimoJogoCadastrado();
+        // Também vamos cortar o nome do jogo se for gigante
+        if (ultimo.length() > 20) {
+            ultimo = ultimo.substring(0, 20) + "...";
+        }
+        lblUltimoJogo.setText(ultimo);
+
+        // 4. ACESSO RÁPIDO
         configurarBotoesAcessoRapido();
     }
     
@@ -192,7 +201,7 @@ public class TelaDashboard extends javax.swing.JFrame {
         lblUsuario.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         lblUsuario.setForeground(new java.awt.Color(255, 255, 255));
         lblUsuario.setText("Bem-vindo, Usuário");
-        jPanel2.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, -1, -1));
+        jPanel2.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 30, -1, -1));
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
