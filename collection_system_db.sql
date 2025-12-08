@@ -75,7 +75,6 @@ INSERT INTO lista_generos (nome) VALUES
 ('Estratégia'), ('Esportes'), ('Corrida'), 
 ('Simulação'), ('Terror'), ('Luta'), ('Plataforma'), ('Outros');
 
--- 2. Tabela para guardar a lista de Mídias
 CREATE TABLE lista_midias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50) NOT NULL
