@@ -169,26 +169,23 @@ public class TelaLogin extends javax.swing.JFrame {
         String loginDigitado = txtUsuario.getText();
         String senhaDigitada = new String(txtSenha.getPassword()); // Se for JPasswordField
 
-        boolean loginSucesso = false;
 
-        // 2. Procura na lista de usuários cadastrados
-        for (Usuario u : DadosTemporarios.listaUsuarios) {
-            // Verifica se User E Senha batem
-            if (u.getUsername().equals(loginDigitado) && u.getSenha().equals(senhaDigitada)) {
-                loginSucesso = true;
-                DadosTemporarios.usuarioLogado = u; // Salva quem logou para usar no Dashboard
-                break; // Para o loop pois já achou
-            }
-        }
+        // 2. Chama o DAO para verificar no Banco de Dados (AQUI MUDOU)
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario usuarioEncontrado = dao.login(loginDigitado, senhaDigitada);
 
-        // 3. Resultado
-        if (loginSucesso) {
+        // 3. Verifica se achou alguém
+        if (usuarioEncontrado != null) {
+            // Sucesso!
+            DadosTemporarios.usuarioLogado = usuarioEncontrado; // Mantemos isso para o resto do sistema saber quem é
+            
             javax.swing.JOptionPane.showMessageDialog(this, "Login realizado com sucesso!");
             
-            // Abre o Dashboard e fecha o Login
+            // Abre o Dashboard
             new TelaDashboard().setVisible(true);
             this.dispose();
         } else {
+            // Erro
             javax.swing.JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!");
         }
     }//GEN-LAST:event_btnEntrarActionPerformed

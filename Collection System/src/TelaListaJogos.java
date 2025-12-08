@@ -21,62 +21,67 @@ public class TelaListaJogos extends javax.swing.JFrame {
     /**
      * Creates new form TelaListaJogos
      */
+    private List<Jogo> listaJogosAtual;
     private String nomeColecaoAtual;
 
     private void configurarTabelaJogos() {
-        // 1. Cores do Corpo da Tabela
-        tabelaJogos.setBackground(new Color(30, 30, 30)); // Fundo Cinza Escuro
-        tabelaJogos.setForeground(Color.WHITE);           // Letra Branca
-        tabelaJogos.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Letra maior
+        // A. Configuração Visual (Mantive a sua)
+        tabelaJogos.setBackground(new Color(30, 30, 30));
+        tabelaJogos.setForeground(Color.WHITE);
+        tabelaJogos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tabelaJogos.setRowHeight(30);
         
-        // 1.1 Cores do Cabeçalho (Header)
         javax.swing.table.JTableHeader header = tabelaJogos.getTableHeader();
-        header.setBackground(new Color(0, 230, 118)); // Verde Neon
-        header.setForeground(Color.BLACK);            // Letra Preta (Contraste Máximo)
-        header.setFont(new Font("Segoe UI", Font.BOLD, 14)); // Negrito
-        header.setBorder(javax.swing.BorderFactory.createEmptyBorder()); 
+        header.setBackground(new Color(0, 230, 118));
+        header.setForeground(Color.BLACK);
+        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
-        // 1.2 Cor da área vazia do scroll
         scrollPaneTabela.getViewport().setBackground(new Color(30, 30, 30));
 
-        // 2. Definir Colunas (Ajustado para os dados que temos no objeto Jogo)
+        // B. Modelo da Tabela
         String[] colunas = {"Nome", "Ano", "Dev", "Gênero", "Mídia"};
-    
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(colunas);
-        modelo.setRowCount(0);
+        DefaultTableModel modelo = new DefaultTableModel(colunas, 0) {
+            @Override 
+            public boolean isCellEditable(int row, int column) { return false; } // Impede edição na célula
+        };
 
-        // 3. BUSCAR DADOS REAIS
-        // Primeiro, limpa a tabela
-        modelo.setRowCount(0);
-
-        // Procura a coleção certa na memória
-        Colecao colecaoEncontrada = null;
-        for (Colecao c : DadosTemporarios.listaColecoes) {
-            // Verifica se o nome bate E se pertence ao usuário logado
-            if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                colecaoEncontrada = c;
-                break;
+        // C. BUSCA DADOS DO BANCO (Aqui mudou tudo!)
+        
+        // 1. Descobrir o ID da coleção atual pelo Nome
+        int idColecao = -1;
+        ColecaoDAO colDao = new ColecaoDAO();
+        
+        if (DadosTemporarios.usuarioLogado != null) {
+            List<Colecao> colecoes = colDao.listarPorUsuario(DadosTemporarios.usuarioLogado.getId());
+            for (Colecao c : colecoes) {
+                if (c.getNome().equals(this.nomeColecaoAtual)) {
+                    idColecao = c.getId();
+                    break;
+                }
             }
         }
 
-        // Se achou a coleção, adiciona os jogos dela na tabela
-        if (colecaoEncontrada != null) {
-            for (Jogo jogo : colecaoEncontrada.getListaJogos()) {
-            modelo.addRow(new Object[]{
-                jogo.getNome(),
-                jogo.getDataLancamento(),
-                jogo.getDesenvolvedora().getNome(),
-                jogo.getGenero(),
-                jogo.getTipoMidia()
-            });
+        // 2. Se achou a coleção, busca os jogos dela no banco
+        if (idColecao != -1) {
+            JogoDAO jogoDao = new JogoDAO();
+            // Guarda na variável da classe para usarmos no Excluir/Editar depois
+            this.listaJogosAtual = jogoDao.listarPorColecao(idColecao);
+            
+            // 3. Preenche a tabela visual
+            for (Jogo jogo : this.listaJogosAtual) {
+                modelo.addRow(new Object[]{
+                    jogo.getNome(),
+                    jogo.getDataLancamento(),
+                    jogo.getDesenvolvedora().getNome(), 
+                    jogo.getGenero(),
+                    jogo.getTipoMidia()
+                });
             }
         } else {
-            System.out.println("Coleção não encontrada ou vazia.");
+            // Caso de erro ou coleção não encontrada
+            this.listaJogosAtual = new java.util.ArrayList<>(); 
         }
     
-        // 4. Aplica o modelo na JTable
         tabelaJogos.setModel(modelo);
     }
 
@@ -287,56 +292,45 @@ public class TelaListaJogos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarJogoActionPerformed
 
     private void btnExcluirJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirJogoActionPerformed
-        // 1. Verifica qual linha está selecionada
-        int linhaSelecionada = tabelaJogos.getSelectedRow();
-    
-        if (linhaSelecionada == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Selecione um jogo na tabela para excluir.");
+        int linha = tabelaJogos.getSelectedRow();
+        
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um jogo para excluir.");
             return;
         }
 
-        // 2. Confirmação
-        int resposta = javax.swing.JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este jogo?", "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
-    
-        if (resposta == javax.swing.JOptionPane.YES_OPTION) {
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza?", "Excluir", JOptionPane.YES_NO_OPTION);
         
-            // 3. Busca a coleção atual
-            for (Colecao c : DadosTemporarios.listaColecoes) {
-                if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                
-                    // 4. Remove o jogo da lista (Baseado no índice da tabela)
-                    c.getListaJogos().remove(linhaSelecionada);
-                
-                    // 5. Atualiza a tabela
-                    configurarTabelaJogos();
-                    javax.swing.JOptionPane.showMessageDialog(this, "Jogo excluído!");
-                    break;
-                }
-            }
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Pega o objeto Jogo da nossa lista usando o índice da tabela
+            Jogo jogoAlvo = this.listaJogosAtual.get(linha);
+            
+            // Chama o DAO para excluir do Banco
+            JogoDAO dao = new JogoDAO();
+            dao.excluir(jogoAlvo.getId());
+            
+            JOptionPane.showMessageDialog(this, "Jogo excluído!");
+            
+            // Atualiza a tabela (lê do banco de novo)
+            configurarTabelaJogos();
         }
     }//GEN-LAST:event_btnExcluirJogoActionPerformed
 
     private void btnEditarJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarJogoActionPerformed
-        int linhaSelecionada = tabelaJogos.getSelectedRow();
-    
-        if (linhaSelecionada == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Selecione um jogo para editar.");
+        int linha = tabelaJogos.getSelectedRow();
+        
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um jogo para editar.");
             return;
         }
-
-        // Encontra o objeto Jogo real na lista
-        Jogo jogoParaEditar = null;
-        for (Colecao c : DadosTemporarios.listaColecoes) {
-            if (c.getNome().equals(this.nomeColecaoAtual) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                jogoParaEditar = c.getListaJogos().get(linhaSelecionada);
-                break;
-            }
-        }
-
-        if (jogoParaEditar != null) {      
-            TelaEditarJogo telaEdicao = new TelaEditarJogo(jogoParaEditar);
-            telaEdicao.setVisible(true);
-        }
+        
+        // Pega o jogo da lista carregada do banco
+        Jogo jogoParaEditar = this.listaJogosAtual.get(linha);
+        
+        // Abre a tela de edição passando o objeto real
+        TelaEditarJogo tela = new TelaEditarJogo(jogoParaEditar);
+        tela.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnEditarJogoActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed

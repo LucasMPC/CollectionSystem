@@ -20,33 +20,35 @@ public class TelaDashboard extends javax.swing.JFrame {
      */
     public TelaDashboard() {
         initComponents();
+        
+        if (DadosTemporarios.usuarioLogado != null) {
+            ColecaoDAO dao = new ColecaoDAO();
+            DadosTemporarios.listaColecoes = dao.listarPorUsuario(DadosTemporarios.usuarioLogado.getId());
+        }
+        
         configurarDashboard();
         this.setLocationRelativeTo(null);
     }
     
     private void configurarDashboard() {
-        // 1. BOAS VINDAS (Corrigido para usar Username e evitar texto gigante)
+        // 1. BOAS VINDAS
         if (DadosTemporarios.usuarioLogado != null) {
-            // Pega o USERNAME (Login) em vez do Nome Completo
             String usuario = DadosTemporarios.usuarioLogado.getUsername();
-            
-            // Truque de Formatação: Se for maior que 15 letras, corta e põe "..."
-            if (usuario.length() > 15) {
-                usuario = usuario.substring(0, 15) + "...";
-            }
-            
+            if (usuario.length() > 15) usuario = usuario.substring(0, 15) + "...";
             lblUsuario.setText("Bem-vindo, " + usuario + "!");
         }
 
-        // 2. CONTAGEM DE DADOS
+        // 2. CONTAGEM DE DADOS (CORRIGIDO PARA O BANCO)
         int qtdColecoes = 0;
         int totalJogos = 0;
+        
+        JogoDAO jogoDao = new JogoDAO(); // <--- O contador vem daqui agora
 
         for (Colecao c : DadosTemporarios.listaColecoes) {
-            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                qtdColecoes++;
-                totalJogos += c.getListaJogos().size();
-            }
+            // Conta as coleções da memória (que já carregamos no login)
+            qtdColecoes++;
+            // Soma a quantidade real de jogos que está no banco
+            totalJogos += jogoDao.contarJogosPorColecao(c.getId());
         }
 
         lblQtdColecoes.setText(String.valueOf(qtdColecoes));
@@ -54,10 +56,7 @@ public class TelaDashboard extends javax.swing.JFrame {
         
         // 3. ÚLTIMO JOGO CADASTRADO
         String ultimo = DadosTemporarios.usuarioLogado.getUltimoJogoCadastrado();
-        // Também vamos cortar o nome do jogo se for gigante
-        if (ultimo.length() > 20) {
-            ultimo = ultimo.substring(0, 20) + "...";
-        }
+        if (ultimo.length() > 20) ultimo = ultimo.substring(0, 20) + "...";
         lblUltimoJogo.setText(ultimo);
 
         // 4. ACESSO RÁPIDO

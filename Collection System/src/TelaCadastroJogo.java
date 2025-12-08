@@ -16,6 +16,7 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
      */
     
     private String nomeColecaoOrigem;
+    private java.util.List<Colecao> colecoesDoUsuario;
     
     public TelaCadastroJogo() {
         initComponents();
@@ -38,36 +39,40 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     }
     
     private void carregarDesenvolvedoras() {
-        cmbDesenvolvedora.removeAllItems(); // Limpa os itens padrão
+        cmbDesenvolvedora.removeAllItems();
         cmbDesenvolvedora.addItem("Selecione...");
-    
-        // Pega a lista lá do arquivo DadosTemporarios
-        for (Desenvolvedora dev : DadosTemporarios.listaDesenvolvedoras) {
+     
+        DesenvolvedoraDAO dao = new DesenvolvedoraDAO();
+        for (Desenvolvedora dev : dao.listarTodas()) {
             cmbDesenvolvedora.addItem(dev.getNome());
         }
     }
     
     private void carregarCombosFixos() {
-        cmbGenero.removeAllItems();
-        cmbGenero.addItem("Ação");
-        cmbGenero.addItem("Aventura");
-        cmbGenero.addItem("RPG");
-        cmbGenero.addItem("FPS");
-        cmbGenero.addItem("Corrida");
-        cmbGenero.addItem("Outros");
+        UtilDAO util = new UtilDAO();
 
+        // 1. Gêneros do Banco
+        cmbGenero.removeAllItems();
+        for (String g : util.listarGeneros()) {
+            cmbGenero.addItem(g);
+        }
+
+        // 2. Mídias do Banco
         cmbMidia.removeAllItems();
-        cmbMidia.addItem("Físico");
-        cmbMidia.addItem("Digital");
+        for (String m : util.listarMidias()) {
+            cmbMidia.addItem(m);
+        }
     }
     
     private void carregarColecoes() {
         cmbColecao.removeAllItems();
-        // cmbColecao.addItem("Selecione..."); // Opcional, mas ajuda na validação
-    
-        // Varre a lista de coleções e adiciona apenas as do usuário logado
-        for (Colecao c : DadosTemporarios.listaColecoes) {
-            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
+        
+        if (DadosTemporarios.usuarioLogado != null) {
+            ColecaoDAO dao = new ColecaoDAO();
+            // Carrega do banco e guarda na variável de memória da tela
+            this.colecoesDoUsuario = dao.listarPorUsuario(DadosTemporarios.usuarioLogado.getId());
+            
+            for (Colecao c : this.colecoesDoUsuario) {
                 cmbColecao.addItem(c.getNome());
             }
         }
@@ -436,72 +441,72 @@ public class TelaCadastroJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-     // 1. Capturas
+        // 1. Capturas
         String nomeJogo = txtNome.getText().trim();
         String dataLancamento = txtData.getText().trim();
         String descricao = txtDescricao.getText().trim();
         
-        String nomeColecao = (String) cmbColecao.getSelectedItem();
+        // Pega o índice selecionado na combo de coleção para achar o ID
+        int indexColecao = cmbColecao.getSelectedIndex(); 
+        
         String nomeDesenvolvedora = (String) cmbDesenvolvedora.getSelectedItem();
         String genero = (String) cmbGenero.getSelectedItem();
         String midia = (String) cmbMidia.getSelectedItem();
         
-        // --- 2. VALIDAÇÕES NOVAS ---
-        
-        // A. Campos Vazios
+        // --- 2. VALIDAÇÕES ---
         if (nomeJogo.isEmpty() || dataLancamento.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Preencha Nome e Data!");
             return;
         }
 
-        // B. Validação da ComboBox (Não aceitar "Selecione...")
-        // Nota: Assumindo que você tem "Selecione..." nas combos. Se não tiver, adicione no carregarDesenvolvedoras
+        if (indexColecao == -1 || this.colecoesDoUsuario == null || this.colecoesDoUsuario.isEmpty()) {
+             javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma Coleção válida.");
+             return;
+        }
+
         if (!Validador.isComboValida(nomeDesenvolvedora)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma Desenvolvedora válida!");
             return;
         }
 
-        // C. Validação de Data Real (Impede 32/01)
         if (!Validador.isDataValida(dataLancamento)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Data inexistente! Verifique dia e mês.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida! Verifique dia e mês.");
             return;
         }
 
-        // --- 3. LÓGICA DE SALVAR ---
+        // --- 3. LÓGICA DE SALVAR NO BANCO ---
 
-        // Busca/Cria Desenvolvedora
-        Desenvolvedora devObjeto = null;
-        for (Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras) {
-            if (d.getNome().equals(nomeDesenvolvedora)) {
-                devObjeto = d; break;
-            }
-        }
-        if (devObjeto == null) devObjeto = new Desenvolvedora(nomeDesenvolvedora, "N/A", "N/A");
-
-        // Busca Coleção
-        Colecao colecaoAlvo = null;
-        for (Colecao c : DadosTemporarios.listaColecoes) {
-            if (c.getNome().equals(nomeColecao) && c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                colecaoAlvo = c; break;
-            }
+        // A. Busca o Objeto Desenvolvedora no Banco pelo nome selecionado
+        DesenvolvedoraDAO devDao = new DesenvolvedoraDAO();
+        Desenvolvedora devObjeto = devDao.buscarPorNome(nomeDesenvolvedora);
+        
+        // Se não achou (ex: erro de sinc), usamos null, mas idealmente deveria achar
+        if (devObjeto == null) {
+             // Opcional: Aqui poderíamos criar uma lógica para inserir nova dev no banco,
+             // mas vamos assumir que o usuário selecionou uma existente da lista.
+             javax.swing.JOptionPane.showMessageDialog(this, "Erro: Desenvolvedora não encontrada no banco.");
+             return;
         }
 
-        if (colecaoAlvo != null) {
-            Jogo novoJogo = new Jogo(nomeJogo, dataLancamento, descricao, devObjeto, genero, midia);
-            colecaoAlvo.adicionarJogo(novoJogo);
-            
-            // --- CORREÇÃO DO USUÁRIO: Salva no objeto do usuário logado ---
-            DadosTemporarios.usuarioLogado.setUltimoJogoCadastrado(novoJogo.getNome()); 
-            // -------------------------------------------------------------
-            
-            javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo!");
-            
-            new TelaListaJogos(this.nomeColecaoOrigem).setVisible(true);
-            this.dispose();
-            
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Erro: Coleção não encontrada.");
-        }
+        // B. Pega o ID da coleção usando a lista que carregamos no início
+        // (O combobox está na mesma ordem da lista 'colecoesDoUsuario')
+        int idColecaoAlvo = this.colecoesDoUsuario.get(indexColecao).getId();
+
+        // C. Cria o Jogo
+        Jogo novoJogo = new Jogo(nomeJogo, dataLancamento, descricao, devObjeto, genero, midia);
+        
+        // D. Salva no Banco via DAO
+        JogoDAO jogoDao = new JogoDAO();
+        jogoDao.cadastrar(novoJogo, idColecaoAlvo);
+        
+        // E. Atualiza Dashboard (Opcional, mas bom manter)
+        DadosTemporarios.usuarioLogado.setUltimoJogoCadastrado(novoJogo.getNome()); 
+        
+        javax.swing.JOptionPane.showMessageDialog(this, "Jogo salvo com sucesso!");
+        
+        // Volta para a lista
+        new TelaListaJogos(this.nomeColecaoOrigem).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void cmbDesenvolvedoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDesenvolvedoraActionPerformed

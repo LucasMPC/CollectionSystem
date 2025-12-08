@@ -245,19 +245,19 @@ public class TelaCriarColecao extends javax.swing.JFrame {
             return;
         }
 
-        // 3. Cria a Coleção e Salva na Lista Global
-        // Nota: Estamos usando o usuarioLogado que criamos no Login
         if (DadosTemporarios.usuarioLogado == null) {
              javax.swing.JOptionPane.showMessageDialog(this, "Erro: Nenhum usuário logado.");
              return;
         }
 
-        Colecao novaColecao = new Colecao(nome, icone, DadosTemporarios.usuarioLogado);
-        DadosTemporarios.listaColecoes.add(novaColecao);
+        // 3. SALVA NO BANCO DE DADOS
+        ColecaoDAO dao = new ColecaoDAO();
+        // Passa o Nome, o Ícone e o ID do usuário
+        dao.cadastrar(nome, icone, DadosTemporarios.usuarioLogado.getId());
 
         javax.swing.JOptionPane.showMessageDialog(this, "Coleção '" + nome + "' criada com sucesso!");
 
-        // 4. Volta para a tela de Coleções (que vai recarregar e mostrar a nova)
+        // 4. Volta para a tela de Coleções
         new TelaColecoes().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed

@@ -32,23 +32,28 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }
     
     private void carregarCombosFixos() {
-        cmbGenero.removeAllItems();
-        cmbGenero.addItem("Ação");
-        cmbGenero.addItem("Aventura");
-        cmbGenero.addItem("RPG");
-        cmbGenero.addItem("FPS");
-        cmbGenero.addItem("Corrida");
-        cmbGenero.addItem("Outros");
+        UtilDAO util = new UtilDAO();
 
+        // 1. Gêneros do Banco
+        cmbGenero.removeAllItems();
+        for (String g : util.listarGeneros()) {
+            cmbGenero.addItem(g);
+        }
+
+        // 2. Mídias do Banco
         cmbMidia.removeAllItems();
-        cmbMidia.addItem("Físico");
-        cmbMidia.addItem("Digital");
+        for (String m : util.listarMidias()) {
+            cmbMidia.addItem(m);
+        }
     }
     
     private void carregarDesenvolvedoras() {
         cmbDesenvolvedora.removeAllItems();
         cmbDesenvolvedora.addItem("Selecione...");
-        for (Desenvolvedora dev : DadosTemporarios.listaDesenvolvedoras) {
+        
+        // Agora busca do banco de dados, não da memória
+        DesenvolvedoraDAO dao = new DesenvolvedoraDAO();
+        for (Desenvolvedora dev : dao.listarTodas()) {
             cmbDesenvolvedora.addItem(dev.getNome());
         }
     }
@@ -424,22 +429,15 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbMidiaActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // Precisamos descobrir qual a coleção desse jogo para voltar pra lista certa
-        String nomeColecaoDoJogo = "";
+        // 1. Pergunta ao Banco qual o nome da coleção deste jogo
+        JogoDAO dao = new JogoDAO();
+        String nomeColecaoDoJogo = dao.buscarNomeColecaoPorIdJogo(jogoEdicao.getId());
         
-        // Varre as coleções para achar onde esse jogo está
-        for (Colecao c : DadosTemporarios.listaColecoes) {
-            if (c.getListaJogos().contains(jogoEdicao)) {
-                nomeColecaoDoJogo = c.getNome();
-                break;
-            }
-        }
-        
-        // Reabre a lista
-        if (!nomeColecaoDoJogo.isEmpty()) {
+        // 2. Redireciona
+        if (nomeColecaoDoJogo != null && !nomeColecaoDoJogo.isEmpty()) {
             new TelaListaJogos(nomeColecaoDoJogo).setVisible(true);
         } else {
-            // Se der algo errado, volta pro Dashboard por segurança
+            // Se algo falhar, volta pro Dashboard por segurança
             new TelaDashboard().setVisible(true);
         }
         
@@ -447,7 +445,7 @@ public class TelaEditarJogo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // 1. Captura (com trim para limpar espaços)
+        // 1. Captura
         String novoNome = txtNome.getText().trim();
         String novaData = txtData.getText().trim();
         String novaDesc = txtDescricao.getText().trim();
@@ -455,63 +453,40 @@ public class TelaEditarJogo extends javax.swing.JFrame {
         String novaMidia = (String) cmbMidia.getSelectedItem();
         String novaDevNome = (String) cmbDesenvolvedora.getSelectedItem();
 
-        // --- VALIDAÇÕES ---
-
-        // A. Campos Vazios
+        // 2. Validações básicas
         if (novoNome.isEmpty() || novaData.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Nome e Data são obrigatórios!");
             return;
         }
-
-        // B. Validação da ComboBox
         if (!Validador.isComboValida(novaDevNome)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma Desenvolvedora válida!");
             return;
         }
-
-        // C. Validação de Data Real (AQUI ESTÁ A CORREÇÃO)
-        // Isso vai impedir 10/13/2000 ou 32/01/2000
         if (!Validador.isDataValida(novaData)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida! Mês ou dia inexistente.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Data inválida!");
             return; 
         }
 
-        // --- SALVAR ---
+        // 3. Atualiza o Objeto Jogo
+        // Primeiro busca a ID da desenvolvedora nova no banco
+        DesenvolvedoraDAO devDao = new DesenvolvedoraDAO();
+        Desenvolvedora devAtualizada = devDao.buscarPorNome(novaDevNome);
 
-        // Busca Dev
-        Desenvolvedora novaDev = null;
-        for(Desenvolvedora d : DadosTemporarios.listaDesenvolvedoras){
-            if(d.getNome().equals(novaDevNome)) novaDev = d;
-        }
-        if(novaDev == null) novaDev = new Desenvolvedora(novaDevNome, "N/A", "N/A");
+        jogoEdicao.setNome(novoNome);
+        jogoEdicao.setDataLancamento(novaData);
+        jogoEdicao.setDescricao(novaDesc);
+        jogoEdicao.setGenero(novoGenero);
+        jogoEdicao.setTipoMidia(novaMidia);
+        if(devAtualizada != null) jogoEdicao.setDesenvolvedora(devAtualizada);
 
-        // Atualiza Objeto
-        if (jogoEdicao != null) {
-            jogoEdicao.setNome(novoNome);
-            jogoEdicao.setDataLancamento(novaData);
-            jogoEdicao.setDescricao(novaDesc);
-            jogoEdicao.setGenero(novoGenero);
-            jogoEdicao.setTipoMidia(novaMidia);
-            jogoEdicao.setDesenvolvedora(novaDev);
-
-            javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
-            
-            // Reabre a lista certa
-            String nomeColecaoDoJogo = "";
-            for (Colecao c : DadosTemporarios.listaColecoes) {
-                if (c.getListaJogos().contains(jogoEdicao)) {
-                    nomeColecaoDoJogo = c.getNome();
-                    break;
-                }
-            }
-            
-            if (!nomeColecaoDoJogo.isEmpty()) {
-                new TelaListaJogos(nomeColecaoDoJogo).setVisible(true);
-            } else {
-                new TelaDashboard().setVisible(true);
-            }
-        }
+        // 4. MANDA PRO BANCO (UPDATE)
+        JogoDAO dao = new JogoDAO();
+        dao.atualizar(jogoEdicao);
         
+        javax.swing.JOptionPane.showMessageDialog(this, "Jogo atualizado com sucesso!");
+        
+        // 5. Volta para o Dashboard
+        new TelaDashboard().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 

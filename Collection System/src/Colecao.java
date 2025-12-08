@@ -11,16 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Colecao {
+    private int id;
     private String nome;
     private String icone;
     private Usuario usuario; // Chave estrangeira id_usuario
-    private List<Jogo> listaJogos; // Representa a tabela colecao_jogo_midia de forma simplificada
 
     public Colecao(String nome, String icone, Usuario usuario) {
         this.nome = nome;
         this.icone = icone;
         this.usuario = usuario;
-        this.listaJogos = new ArrayList<>();
     }
     
     public String getNome() {
@@ -34,19 +33,12 @@ public class Colecao {
     public Usuario getUsuario() {
         return usuario;
     }
-    
-    public List<Jogo> getListaJogos() {
-        return listaJogos;
+
+    public int getId() {
+        return id;
     }
 
-    public void adicionarJogo(Jogo jogo) {
-        listaJogos.add(jogo);
-    }
-
-    public void listarItens() {
-        System.out.println("\n--- Colecao: " + nome + " (Usuario: " + usuario.getUsername() + ") ---");
-        for (Jogo jogo : listaJogos) {
-            jogo.exibirInfos();
-        }
+    public void setId(int id) {
+        this.id = id;
     }
 }

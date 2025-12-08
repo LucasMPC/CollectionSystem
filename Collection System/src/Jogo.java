@@ -8,6 +8,7 @@
  * @author l3huz
  */
 public class Jogo {
+    private int id;
     private String nome;
     private String dataLancamento;
     private String descricao;
@@ -70,8 +71,14 @@ public class Jogo {
     public void setTipoMidia(String tipoMidia) {
         this.tipoMidia = tipoMidia;
     }
-    
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void exibirInfos() {
         System.out.println("Jogo: " + nome + " | Gen: " + genero + " | Midia: " + tipoMidia);

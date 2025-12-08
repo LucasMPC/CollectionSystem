@@ -8,6 +8,7 @@
  * @author l3huz
  */
 public class Desenvolvedora {
+    private int id;
     private String nome;
     private String pais;
     private String dataFundacao;
@@ -16,6 +17,14 @@ public class Desenvolvedora {
         this.nome = nome;
         this.pais = pais;
         this.dataFundacao = dataFundacao;
+    }
+    
+    // Construtor auxiliar para o Banco de Dados (Só ID e Nome)
+    public Desenvolvedora(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+        this.pais = "N/A"; // Valor padrão
+        this.dataFundacao = "N/A";
     }
 
     public String getNome() {
@@ -28,6 +37,14 @@ public class Desenvolvedora {
 
     public String getDataFundacao() {
         return dataFundacao;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
 }

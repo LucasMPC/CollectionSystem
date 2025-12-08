@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Usuario {
+    private int id;
     private String nome;
     private String email;
     private String username;
@@ -61,6 +62,14 @@ public class Usuario {
 
     public void setHistoricoAcesso(List<String> historicoAcesso) {
         this.historicoAcesso = historicoAcesso;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     

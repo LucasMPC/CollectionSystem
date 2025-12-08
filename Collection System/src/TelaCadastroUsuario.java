@@ -254,8 +254,16 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
        // 4. CRIA O OBJETO REAL
        Usuario novoUsuario = new Usuario(nome, email, usuario, senha, nascimento);
 
-       // 5. SALVA NA LISTA
-       DadosTemporarios.listaUsuarios.add(novoUsuario);
+       // 5. BANCO DE DADOS
+        UsuarioDAO dao = new UsuarioDAO();
+    
+        // Verifica se já existe antes de tentar salvar
+        if (dao.usuarioExiste(usuario)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Este nome de usuário já existe!");
+            return;
+        }
+    
+        dao.cadastrar(novoUsuario);
 
        javax.swing.JOptionPane.showMessageDialog(this, "Conta criada com sucesso!\nFaça login agora.");
 

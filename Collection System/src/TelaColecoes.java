@@ -30,24 +30,25 @@ public class TelaColecoes extends javax.swing.JFrame {
     }
     
     private void carregarColecoesDinamicas() {
-        // Limpa qualquer coisa que esteja no painel (para não duplicar)
         pnlContainerCards.removeAll();
 
-        // Verifica se a lista está vazia
-        if (DadosTemporarios.listaColecoes.isEmpty()) {
-            // Opcional: Mostrar uma mensagem ou label dizendo "Nenhuma coleção"
+        // 1. Instancia os DAOs
+        ColecaoDAO dao = new ColecaoDAO();
+        JogoDAO jogoDao = new JogoDAO(); // <--- Precisamos dele para contar
+
+        // 2. Busca e Atualiza a lista
+        if (DadosTemporarios.usuarioLogado != null) {
+            DadosTemporarios.listaColecoes = dao.listarPorUsuario(DadosTemporarios.usuarioLogado.getId());
         }
 
-        // PERCORRE A LISTA REAL DE COLEÇÕES
+        // 3. Cria os Cards com a contagem real
         for (Colecao c : DadosTemporarios.listaColecoes) {
-            // Verifica se a coleção pertence ao usuário logado (opcional, mas bom pra lógica)
-            if (c.getUsuario() == DadosTemporarios.usuarioLogado) {
-                // Chama o criador de card passando os dados reais
-                criarCardColecao(c.getNome(), c.getIcone(), c.getListaJogos().size());
-            }
+            // Pergunta ao Banco quantos jogos tem nessa coleção
+            int qtdReal = jogoDao.contarJogosPorColecao(c.getId());
+            
+            criarCardColecao(c.getNome(), c.getIcone(), qtdReal);
         }
 
-        // Atualiza a tela
         pnlContainerCards.revalidate();
         pnlContainerCards.repaint();
     }
